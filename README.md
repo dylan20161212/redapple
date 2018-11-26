@@ -98,3 +98,12 @@ To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`)
 [Setting up Continuous Integration]: https://www.jhipster.tech/documentation-archive/v5.6.1/setting-up-ci/
 
 
+
+-------------------使用指南----------------------------------
+eclipse 中运行方法：
+1.main 函数运行  在 run as config 中加入运行参数 ：--spring.profiles.active=dev,no-liquibase 可以运行
+2.产品模式为 mvn clean package 打包war...
+  
+
+
+
