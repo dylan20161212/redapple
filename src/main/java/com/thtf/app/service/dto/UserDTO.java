@@ -23,11 +23,8 @@ public class UserDTO {
 	@Size(min = 1, max = 50)
 	private String login;
 
-	@Size(max = 50)
-	private String firstName;
-
-	@Size(max = 50)
-	private String lastName;
+	@Size(min = 1, max = 50)
+	private String realName;
 
 	@Size(max = 50)
 	private String organizationName;
@@ -65,8 +62,8 @@ public class UserDTO {
 	}
 
 	public UserDTO(User user) {
-		this(user.getId(), user.getLogin(), user.getFirstName(), user.getLastName(), user.getEmail(),
-				user.getActivated(), user.getImageUrl(), user.getLangKey(), user.getCreatedBy(), user.getCreatedDate(),
+		this(user.getId(), user.getLogin(), user.getRealName(), user.getEmail(), user.getActivated(),
+				user.getImageUrl(), user.getLangKey(), user.getCreatedBy(), user.getCreatedDate(),
 				user.getLastModifiedBy(), user.getLastModifiedDate(),
 				// user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet()),
 				null,
@@ -83,14 +80,13 @@ public class UserDTO {
 				null, user.getOrganizationName());
 	}
 
-	public UserDTO(Long id, String login, String firstName, String lastName, String email, boolean activated,
-			String imageUrl, String langKey, String createdBy, Instant createdDate, String lastModifiedBy,
-			Instant lastModifiedDate, Set<String> authorities) {
+	public UserDTO(Long id, String login, String realName, String email, boolean activated, String imageUrl,
+			String langKey, String createdBy, Instant createdDate, String lastModifiedBy, Instant lastModifiedDate,
+			Set<String> authorities) {
 
 		this.id = id;
 		this.login = login;
-		this.firstName = firstName;
-		this.lastName = lastName;
+		this.realName = realName;
 		this.email = email;
 		this.activated = activated;
 		this.imageUrl = imageUrl;
@@ -102,15 +98,13 @@ public class UserDTO {
 		this.authorities = authorities;
 	}
 
-	public UserDTO(Long id, String login, String firstName, String lastName, String email, boolean activated,
-			String imageUrl, String langKey, String createdBy, Instant createdDate, String lastModifiedBy,
-			Instant lastModifiedDate, Set<String> authorities, Set<RoleDTO> roles, Long organizationId,
-			String organizationName) {
+	public UserDTO(Long id, String login, String realName, String email, boolean activated, String imageUrl,
+			String langKey, String createdBy, Instant createdDate, String lastModifiedBy, Instant lastModifiedDate,
+			Set<String> authorities, Set<RoleDTO> roles, Long organizationId, String organizationName) {
 
 		this.id = id;
 		this.login = login;
-		this.firstName = firstName;
-		this.lastName = lastName;
+		this.realName = realName;
 		this.email = email;
 		this.activated = activated;
 		this.imageUrl = imageUrl;
@@ -125,14 +119,13 @@ public class UserDTO {
 		this.organizationName = organizationName;
 	}
 
-	public UserDTO(Long id, String login, String firstName, String lastName, String email, boolean activated,
-			String imageUrl, String langKey, String createdBy, Instant createdDate, String lastModifiedBy,
-			Instant lastModifiedDate, Set<RoleDTO> roles, Long organizationId, String organizationName) {
+	public UserDTO(Long id, String login, String realName, String email, boolean activated, String imageUrl,
+			String langKey, String createdBy, Instant createdDate, String lastModifiedBy, Instant lastModifiedDate,
+			Set<RoleDTO> roles, Long organizationId, String organizationName) {
 
 		this.id = id;
 		this.login = login;
-		this.firstName = firstName;
-		this.lastName = lastName;
+		this.realName = realName;
 		this.email = email;
 		this.activated = activated;
 		this.imageUrl = imageUrl;
@@ -176,12 +169,48 @@ public class UserDTO {
 		this.login = login;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getRealName() {
+		return realName;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public void setRealName(String realName) {
+		this.realName = realName;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public void setActivated(boolean activated) {
+		this.activated = activated;
+	}
+
+	public void setLangKey(String langKey) {
+		this.langKey = langKey;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public void setCreatedDate(Instant createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public void setLastModifiedBy(String lastModifiedBy) {
+		this.lastModifiedBy = lastModifiedBy;
+	}
+
+	public void setAuthorities(Set<String> authorities) {
+		this.authorities = authorities;
+	}
+
+	public void setRoles(Set<RoleDTO> roles) {
+		this.roles = roles;
 	}
 
 	public String getEmail() {
@@ -275,10 +304,12 @@ public class UserDTO {
 
 	@Override
 	public String toString() {
-		return "UserDTO{" + "login='" + login + '\'' + ", firstName='" + firstName + '\'' + ", lastName='" + lastName
-				+ '\'' + ", email='" + email + '\'' + ", imageUrl='" + imageUrl + '\'' + ", activated=" + activated
-				+ ", langKey='" + langKey + '\'' + ", createdBy=" + createdBy + ", createdDate=" + createdDate
-				+ ", lastModifiedBy='" + lastModifiedBy + '\'' + ", lastModifiedDate=" + lastModifiedDate
-				+ ", authorities=" + authorities + "}";
+		return "UserDTO [id=" + id + ", login=" + login + ", realName=" + realName + ", organizationName="
+				+ organizationName + ", email=" + email + ", imageUrl=" + imageUrl + ", activated=" + activated
+				+ ", langKey=" + langKey + ", createdBy=" + createdBy + ", createdDate=" + createdDate
+				+ ", lastModifiedBy=" + lastModifiedBy + ", lastModifiedDate=" + lastModifiedDate + ", authorities="
+				+ authorities + ", organizationId=" + organizationId + ", organizationOrgName=" + organizationOrgName
+				+ ", roles=" + roles + "]";
 	}
+
 }

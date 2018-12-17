@@ -97,7 +97,7 @@ public class UserExtendServiceImpl implements UserExtendService {
     			user = user0;
     			if(userExtend.getLogin().equals(user.getLogin())){
     				user.setEmail(userExtend.getEmail());
-    				user.setFirstName(userExtend.getName());
+    				user.setRealName(userExtend.getName());
     				existed =true;
     				
     				break;
@@ -113,7 +113,7 @@ public class UserExtendServiceImpl implements UserExtendService {
     			user.setOrganization(this.organizationRepository.getOne(Long.parseLong(userExtend.getOrganizationId())));
     			user.setOrganizationName(userExtend.getOrganizationName());
     			user.setEmail(userExtend.getEmail());
-				user.setFirstName(userExtend.getName());
+				user.setRealName(userExtend.getName());
 				user.setLangKey("zh-cn");
     		}
     		this.userRepository.save(user);

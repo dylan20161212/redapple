@@ -59,7 +59,7 @@ public class FillingBorrowServiceImpl implements FillingBorrowService {
 				.orElseThrow(() -> new InternalServerErrorException("Current user login not found"));
         User user = userRepository.findOneByLogin(userLogin).orElse(null);
         fillingBorrowDTO.setMediatorId(user.getId());
-        fillingBorrowDTO.setMediatorName(user.getFirstName());
+        fillingBorrowDTO.setMediatorName(user.getRealName());
         FillingBorrow fillingBorrow = fillingBorrowMapper.toEntity(fillingBorrowDTO);
         fillingBorrow = fillingBorrowRepository.save(fillingBorrow);
         return fillingBorrowMapper.toDto(fillingBorrow);

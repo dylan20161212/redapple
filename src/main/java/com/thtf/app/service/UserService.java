@@ -76,42 +76,42 @@ public class UserService {
 		this.userRoleOrganizationRepository = userRoleOrganizationRepository;
 	}
 
-	public Optional<User> activateRegistration(String key) {
-		log.debug("Activating user for activation key {}", key);
-		return userRepository.findOneByActivationKey(key).map(user -> {
-			// activate given user for the registration key.
-			user.setActivated(true);
-			user.setActivationKey(null);
-			cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
-			cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
-			log.debug("Activated user: {}", user);
-			return user;
-		});
-	}
+//	public Optional<User> activateRegistration(String key) {
+//		log.debug("Activating user for activation key {}", key);
+//		return userRepository.findOneByActivationKey(key).map(user -> {
+//			// activate given user for the registration key.
+//			user.setActivated(true);
+////			user.setActivationKey(null);
+//			cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
+//			cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+//			log.debug("Activated user: {}", user);
+//			return user;
+//		});
+//	}
 
-	public Optional<User> completePasswordReset(String newPassword, String key) {
-		log.debug("Reset user password for reset key {}", key);
+//	public Optional<User> completePasswordReset(String newPassword, String key) {
+//		log.debug("Reset user password for reset key {}", key);
+//
+//		return userRepository.findOneByResetKey(key)
+//				.filter(user -> user.getResetDate().isAfter(Instant.now().minusSeconds(86400))).map(user -> {
+//					user.setPassword(passwordEncoder.encode(newPassword));
+//					user.setResetKey(null);
+//					user.setResetDate(null);
+//					cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
+//					cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+//					return user;
+//				});
+//	}
 
-		return userRepository.findOneByResetKey(key)
-				.filter(user -> user.getResetDate().isAfter(Instant.now().minusSeconds(86400))).map(user -> {
-					user.setPassword(passwordEncoder.encode(newPassword));
-					user.setResetKey(null);
-					user.setResetDate(null);
-					cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
-					cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
-					return user;
-				});
-	}
-
-	public Optional<User> requestPasswordReset(String mail) {
-		return userRepository.findOneByEmailIgnoreCase(mail).filter(User::getActivated).map(user -> {
-			user.setResetKey(RandomUtil.generateResetKey());
-			user.setResetDate(Instant.now());
-			cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
-			cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
-			return user;
-		});
-	}
+//	public Optional<User> requestPasswordReset(String mail) {
+//		return userRepository.findOneByEmailIgnoreCase(mail).filter(User::getActivated).map(user -> {
+//			user.setResetKey(RandomUtil.generateResetKey());
+//			user.setResetDate(Instant.now());
+//			cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
+//			cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+//			return user;
+//		});
+//	}
 
 	public User registerUser(UserDTO userDTO, String password) {
 
@@ -122,15 +122,13 @@ public class UserService {
 		newUser.setLogin(userDTO.getLogin());
 		// new user gets initially a generated password
 		newUser.setPassword(encryptedPassword);
-		newUser.setFirstName(userDTO.getFirstName());
-		newUser.setLastName(userDTO.getLastName());
+		newUser.setRealName(userDTO.getRealName());
 		newUser.setEmail(userDTO.getEmail());
 		newUser.setImageUrl(userDTO.getImageUrl());
 		newUser.setLangKey(userDTO.getLangKey());
 		// new user is not active
 		newUser.setActivated(false);
 		// new user gets registration key
-		newUser.setActivationKey(RandomUtil.generateActivationKey());
 		authorities.add(authority);
 		// newUser.setAuthorities(authorities);
 		Role roleForRegister = new Role();
@@ -149,8 +147,7 @@ public class UserService {
 	public User createUser(UserDTO userDTO) {
 		User user = new User();
 		user.setLogin(userDTO.getLogin());
-		user.setFirstName(userDTO.getFirstName());
-		user.setLastName(userDTO.getLastName());
+		user.setRealName(userDTO.getRealName());
 		user.setEmail(userDTO.getEmail());
 		user.setImageUrl(userDTO.getImageUrl());
 		// user.setOrganization(organizationRepository.findOne(userDTO.getOrganizationId()));
@@ -173,8 +170,8 @@ public class UserService {
 		// }
 		String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
 		user.setPassword(encryptedPassword);
-		user.setResetKey(RandomUtil.generateResetKey());
-		user.setResetDate(Instant.now());
+//		user.setResetKey(RandomUtil.generateResetKey());
+//		user.setResetDate(Instant.now());
 		user.setActivated(userDTO.isActivated());
 		// user.setRoles(userDTO.getRoles().stream().map(r ->
 		// roleMapper.toEntity(r)).collect(Collectors.toSet()));
@@ -202,10 +199,9 @@ public class UserService {
 	 * @param imageUrl
 	 *            image URL of user
 	 */
-	public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl) {
+	public void updateUser(String realName, String email, String langKey, String imageUrl) {
 		SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin).ifPresent(user -> {
-			user.setFirstName(firstName);
-			user.setLastName(lastName);
+			user.setRealName(realName);
 			user.setEmail(email);
 			user.setLangKey(langKey);
 			user.setImageUrl(imageUrl);
@@ -228,8 +224,7 @@ public class UserService {
 		User user = userRepository.findById(userDTO.getId()).orElse(null);
 		List<UserRoleOrganization> exists = this.userRoleOrganizationRepository.findByUserId(user.getId());
 		user.setLogin(userDTO.getLogin());
-		user.setFirstName(userDTO.getFirstName());
-		user.setLastName(userDTO.getLastName());
+		user.setRealName(userDTO.getRealName());
 		user.setEmail(userDTO.getEmail());
 		user.setImageUrl(userDTO.getImageUrl());
 		user.setActivated(userDTO.isActivated());
@@ -393,8 +388,7 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public Optional<UserDTO> getUserWithRolesByLogin(String login) {
 
-		return userRepository.findOneByLogin(login).map(u -> new UserDTO(u.getId(), u.getLogin(), u.getFirstName(),
-				u.getLastName(), u.getEmail(), u.getActivated(), u.getImageUrl(), u.getLangKey(), u.getCreatedBy(),
+		return userRepository.findOneByLogin(login).map(u -> new UserDTO(u.getId(), u.getLogin(), u.getRealName(), u.getEmail(), u.getActivated(), u.getImageUrl(), u.getLangKey(), u.getCreatedBy(),
 				u.getCreatedDate(), u.getLastModifiedBy(), u.getLastModifiedDate(), null,
 				this.getCurrentLoginRole(u).stream()
 						.map(r -> new RoleDTO(r.getId(), r.getRoleName(), r.getRoleDescription(), r.getRoleFlag(),
@@ -503,8 +497,7 @@ public class UserService {
 				authorities.add(auth);
 			}
 
-			tempUdto = new UserDTO(tempUser.getId(), tempUser.getLogin(), tempUser.getFirstName(),
-					tempUser.getLastName(), tempUser.getEmail(), tempUser.getActivated(), tempUser.getImageUrl(),
+			tempUdto = new UserDTO(tempUser.getId(), tempUser.getLogin(), tempUser.getRealName(), tempUser.getEmail(), tempUser.getActivated(), tempUser.getImageUrl(),
 					tempUser.getLangKey(), tempUser.getCreatedBy(), tempUser.getCreatedDate(),
 					tempUser.getLastModifiedBy(), tempUser.getLastModifiedDate(), authorities, null,
 					// u.getRoles().stream()

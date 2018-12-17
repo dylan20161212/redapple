@@ -31,7 +31,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(description = "通知公告")
 @Entity
-@Table(name = "t_notification")
+@Table(name = "sys_notification")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Notification extends AbstractAuditingEntity implements Serializable {
 

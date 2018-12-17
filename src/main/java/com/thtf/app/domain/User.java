@@ -37,10 +37,13 @@ import io.swagger.annotations.ApiModelProperty;
  * A user.
  */
 @Entity
-@Table(name = "jhi_user")
+@Table(name = "sys_user")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-//@NamedEntityGraph(name = "withRoles", attributeNodes = @NamedAttributeNode(value = "roles", subgraph = "subgraphroles"), subgraphs = {
-//		@NamedSubgraph(name = "subgraphroles", attributeNodes = @NamedAttributeNode("resources")) })
+// @NamedEntityGraph(name = "withRoles", attributeNodes =
+// @NamedAttributeNode(value = "roles", subgraph = "subgraphroles"), subgraphs =
+// {
+// @NamedSubgraph(name = "subgraphroles", attributeNodes =
+// @NamedAttributeNode("resources")) })
 public class User extends AbstractAuditingEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -58,16 +61,12 @@ public class User extends AbstractAuditingEntity implements Serializable {
 	@JsonIgnore
 	@NotNull
 	@Size(min = 60, max = 60)
-	@Column(name = "password_hash", length = 60)
+	@Column(name = "password", length = 60)
 	private String password;
 
 	@Size(max = 50)
-	@Column(name = "first_name", length = 50)
-	private String firstName;
-
-	@Size(max = 50)
-	@Column(name = "last_name", length = 50)
-	private String lastName;
+	@Column(name = "real_name", length = 50)
+	private String realName;
 
 	@Size(max = 50)
 	@Column(name = "organization_name", length = 50)
@@ -89,19 +88,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
 	@Size(max = 256)
 	@Column(name = "image_url", length = 256)
 	private String imageUrl;
-
-	@Size(max = 20)
-	@Column(name = "activation_key", length = 20)
-	@JsonIgnore
-	private String activationKey;
-
-	@Size(max = 20)
-	@Column(name = "reset_key", length = 20)
-	@JsonIgnore
-	private String resetKey;
-
-	@Column(name = "reset_date")
-	private Instant resetDate = null;
 
 	@Column(name = "created_date")
 	private Instant createdDate = null;
@@ -163,22 +149,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
 		this.password = password;
 	}
 
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
 	public String getEmail() {
 		return email;
 	}
@@ -199,6 +169,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 		return imageUrl;
 	}
 
+	public String getRealName() {
+		return realName;
+	}
+
+	public void setRealName(String realName) {
+		this.realName = realName;
+	}
+
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
@@ -209,30 +187,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
 	public void setActivated(boolean activated) {
 		this.activated = activated;
-	}
-
-	public String getActivationKey() {
-		return activationKey;
-	}
-
-	public void setActivationKey(String activationKey) {
-		this.activationKey = activationKey;
-	}
-
-	public String getResetKey() {
-		return resetKey;
-	}
-
-	public void setResetKey(String resetKey) {
-		this.resetKey = resetKey;
-	}
-
-	public Instant getResetDate() {
-		return resetDate;
-	}
-
-	public void setResetDate(Instant resetDate) {
-		this.resetDate = resetDate;
 	}
 
 	public String getLangKey() {
@@ -287,10 +241,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User{" + "login='" + login + '\'' + ", firstName='" + firstName + '\'' + ", lastName='" + lastName
-				+ '\'' + ", email='" + email + '\'' + ", imageUrl='" + imageUrl + '\'' + ", activated='" + activated
-				+ '\'' + ", langKey='" + langKey + '\'' + ", activationKey='" + activationKey + '\''
-				+ ", organizationName='" + organizationName + '\'' + "}";
+		return "User{" + "login='" + login + '\'' + '\'' + ", email='" + email + '\'' + ", imageUrl='" + imageUrl + '\''
+				+ ", activated='" + activated + '\'' + ", langKey='" + langKey + '\'' + '\'' + ", organizationName='"
+				+ organizationName + '\'' + "}";
 	}
 
 	@Override

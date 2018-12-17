@@ -12,7 +12,7 @@ import java.util.Objects;
  * A UserRoleOrganization.
  */
 @Entity
-@Table(name = "t_user_role_organization")
+@Table(name = "sys_user_role_organization")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class UserRoleOrganization extends AbstractAuditingEntity implements Serializable {
 

@@ -138,7 +138,7 @@ public class NotificationServiceImpl implements NotificationService {
 		for (NotificationRecord nr : rNotificationRecord) {
 			rNotificationRecordDTO.add(new NotificationRecordDTO(nr,
 					userLoginNames.stream().filter(user -> user.getLogin().equals(nr.getUserLogin()))
-							.map(User::getFirstName).findFirst().orElse("none")));
+							.map(User::getRealName).findFirst().orElse("none")));
 
 		}
 		// 通知的Record对应的login，组成数组 listLogin

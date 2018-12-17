@@ -17,7 +17,7 @@ import java.util.Objects;
  */
 @ApiModel(description = "通知公告记录，用于标识阅读与否")
 @Entity
-@Table(name = "t_notification_record")
+@Table(name = "sys_notification_record")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class NotificationRecord extends AbstractAuditingEntity implements Serializable {
 

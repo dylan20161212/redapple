@@ -16,7 +16,7 @@ import java.util.Objects;
  */
 @ApiModel(description = "The Attachment entity.")
 @Entity
-@Table(name = "t_attachment")
+@Table(name = "sys_attachment")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Attachment extends AbstractAuditingEntity implements Serializable {
 

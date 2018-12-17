@@ -230,7 +230,7 @@ public class CaseProcessInfoServiceImpl implements CaseProcessInfoService {
 				log.debug("Request to save CaseProcessInfo : {}", caseProcessInfoDTO);
 				User user = CommonServiceUtil.getCurrentLoginUser(this.userRepository);
 				caseProcessInfoDTO.setmPersonId(user.getId());
-				caseProcessInfoDTO.setmPersonName(user.getFirstName());
+				caseProcessInfoDTO.setmPersonName(user.getRealName());
 				String mFiles = caseProcessInfoDTO.getmFiles();
 				caseProcessInfoDTO.setmFiles("[]");
 		        CaseProcessInfo caseProcessInfo = caseProcessInfoMapper.toEntity(caseProcessInfoDTO);

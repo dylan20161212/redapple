@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -23,176 +24,170 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * A Role.
  */
 @Entity
-@Table(name = "t_role")
+@Table(name = "sys_role")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Role extends AbstractAuditingEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(name = "role_name", nullable = false)
-    private String roleName;
+	@Size(max = 200)
+	@Column(name = "role_name", nullable = false)
+	private String roleName;
 
-    @Column(name = "role_description")
-    private String roleDescription;
+	@Size(max = 200)
+	@Column(name = "role_description")
+	private String roleDescription;
 
-    @Column(name = "role_flag")
-    private String roleFlag;
+	@Size(max = 1)
+	@Column(name = "role_flag")
+	private Integer roleFlag;
 
-    @Column(name = "role_eff_date")
-    private ZonedDateTime roleEffDate;
+	@Column(name = "role_eff_date")
+	private ZonedDateTime roleEffDate;
 
-    @Column(name = "role_exp_date")
-    private ZonedDateTime roleExpDate;
+	@Column(name = "role_exp_date")
+	private ZonedDateTime roleExpDate;
 
-    @ManyToMany
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "t_role_resource",
-               joinColumns = @JoinColumn(name="roles_id", referencedColumnName="id"),
-               inverseJoinColumns = @JoinColumn(name="resources_id", referencedColumnName="id"))
-    private Set<Resource> resources = new HashSet<>();
+	@ManyToMany
+	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	@JoinTable(name = "t_role_resource", joinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "resources_id", referencedColumnName = "id"))
+	private Set<Resource> resources = new HashSet<>();
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
-    // jhipster-needle-entity-add-field - Jhipster will add fields here, do not remove
-    public Long getId() {
-        return id;
-    }
+	@ManyToMany(mappedBy = "roles")
+	private Set<User> users = new HashSet<>();
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	// jhipster-needle-entity-add-field - Jhipster will add fields here, do not
+	// remove
+	public Long getId() {
+		return id;
+	}
 
-    public String getRoleName() {
-        return roleName;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public Role roleName(String roleName) {
-        this.roleName = roleName;
-        return this;
-    }
+	public String getRoleName() {
+		return roleName;
+	}
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
+	public Role roleName(String roleName) {
+		this.roleName = roleName;
+		return this;
+	}
 
-    public String getRoleDescription() {
-        return roleDescription;
-    }
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
 
-    public Role roleDescription(String roleDescription) {
-        this.roleDescription = roleDescription;
-        return this;
-    }
+	public String getRoleDescription() {
+		return roleDescription;
+	}
 
-    public void setRoleDescription(String roleDescription) {
-        this.roleDescription = roleDescription;
-    }
+	public Role roleDescription(String roleDescription) {
+		this.roleDescription = roleDescription;
+		return this;
+	}
 
-    public String getRoleFlag() {
-        return roleFlag;
-    }
+	public void setRoleDescription(String roleDescription) {
+		this.roleDescription = roleDescription;
+	}
 
-    public Role roleFlag(String roleFlag) {
-        this.roleFlag = roleFlag;
-        return this;
-    }
+	public Integer getRoleFlag() {
+		return roleFlag;
+	}
 
-    public void setRoleFlag(String roleFlag) {
-        this.roleFlag = roleFlag;
-    }
+	public void setRoleFlag(Integer roleFlag) {
+		this.roleFlag = roleFlag;
+	}
 
-    public ZonedDateTime getRoleEffDate() {
-        return roleEffDate;
-    }
+	public ZonedDateTime getRoleEffDate() {
+		return roleEffDate;
+	}
 
-    public Role roleEffDate(ZonedDateTime roleEffDate) {
-        this.roleEffDate = roleEffDate;
-        return this;
-    }
+	public Role roleEffDate(ZonedDateTime roleEffDate) {
+		this.roleEffDate = roleEffDate;
+		return this;
+	}
 
-    public void setRoleEffDate(ZonedDateTime roleEffDate) {
-        this.roleEffDate = roleEffDate;
-    }
+	public void setRoleEffDate(ZonedDateTime roleEffDate) {
+		this.roleEffDate = roleEffDate;
+	}
 
-    public ZonedDateTime getRoleExpDate() {
-        return roleExpDate;
-    }
+	public ZonedDateTime getRoleExpDate() {
+		return roleExpDate;
+	}
 
-    public Role roleExpDate(ZonedDateTime roleExpDate) {
-        this.roleExpDate = roleExpDate;
-        return this;
-    }
+	public Role roleExpDate(ZonedDateTime roleExpDate) {
+		this.roleExpDate = roleExpDate;
+		return this;
+	}
 
-    public void setRoleExpDate(ZonedDateTime roleExpDate) {
-        this.roleExpDate = roleExpDate;
-    }
+	public void setRoleExpDate(ZonedDateTime roleExpDate) {
+		this.roleExpDate = roleExpDate;
+	}
 
-    public Set<Resource> getResources() {
-        return resources;
-    }
+	public Set<Resource> getResources() {
+		return resources;
+	}
 
-    public Role resources(Set<Resource> resources) {
-        this.resources = resources;
-        return this;
-    }
+	public Role resources(Set<Resource> resources) {
+		this.resources = resources;
+		return this;
+	}
 
-    public Role addResource(Resource resource) {
-        this.resources.add(resource);
-        return this;
-    }
+	public Role addResource(Resource resource) {
+		this.resources.add(resource);
+		return this;
+	}
 
-    public Role removeResource(Resource resource) {
-        this.resources.remove(resource);
-        return this;
-    }
+	public Role removeResource(Resource resource) {
+		this.resources.remove(resource);
+		return this;
+	}
 
-    public void setResources(Set<Resource> resources) {
-        this.resources = resources;
-    }
+	public void setResources(Set<Resource> resources) {
+		this.resources = resources;
+	}
 
-    public Set<User> getUsers() {
+	public Set<User> getUsers() {
 		return users;
 	}
 
 	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
-    
-    // jhipster-needle-entity-add-getters-setters - Jhipster will add getters and setters here, do not remove
+
+	// jhipster-needle-entity-add-getters-setters - Jhipster will add getters
+	// and setters here, do not remove
 
 	@Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Role role = (Role) o;
-        if (role.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), role.getId());
-    }
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		Role role = (Role) o;
+		if (role.getId() == null || getId() == null) {
+			return false;
+		}
+		return Objects.equals(getId(), role.getId());
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getId());
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getId());
+	}
 
-    @Override
-    public String toString() {
-        return "Role{" +
-            "id=" + getId() +
-            ", roleName='" + getRoleName() + "'" +
-            ", roleDescription='" + getRoleDescription() + "'" +
-            ", roleFlag='" + getRoleFlag() + "'" +
-            ", roleEffDate='" + getRoleEffDate() + "'" +
-            ", roleExpDate='" + getRoleExpDate() + "'" +
-            "}";
-    }
+	@Override
+	public String toString() {
+		return "Role{" + "id=" + getId() + ", roleName='" + getRoleName() + "'" + ", roleDescription='"
+				+ getRoleDescription() + "'" + ", roleFlag='" + getRoleFlag() + "'" + ", roleEffDate='"
+				+ getRoleEffDate() + "'" + ", roleExpDate='" + getRoleExpDate() + "'" + "}";
+	}
 }

@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
@@ -23,222 +22,209 @@ import io.swagger.annotations.ApiModel;
  */
 @ApiModel(description = "not an ignored comment")
 @Entity
-@Table(name = "t_organization")
+@Table(name = "sys_organization")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Organization extends AbstractAuditingEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(name = "org_code")
-    private String orgCode;
+	@Size(max = 48)
+	@Column(name = "org_code")
+	private String orgCode;
 
-    @Size(max = 255)
-    @Column(name = "org_name")
-    private String orgName;
+	@Size(max = 200)
+	@Column(name = "org_name")
+	private String orgName;
 
-    @Column(name = "org_flag")
-    private String orgFlag;
+	@Size(max = 200)
+	@Column(name = "org_full_name")
+	private String orgFullName;
 
-    @Column(name = "org_description")
-    private String orgDescription;
+	@Size(max = 1)
+	@Column(name = "org_flag")
+	private Integer orgFlag;
 
-    @Column(name = "org_lft")
-    private Long orgLft;
+	@Size(max = 50)
+	@Column(name = "org_identity")
+	private String orgIdentity;
 
-    @Column(name = "org_rgt")
-    private Long orgRgt;
+	@Size(max = 200)
+	@Column(name = "org_description")
+	private String orgDescription;
 
-    @Column(name = "org_level")
-    private Long orgLevel;
+	@Size(max = 2)
+	@Column(name = "org_level")
+	private Integer orgLevel;
 
-    @Column(name = "org_order")
-    private Float orgOrder;
+	@Size(max = 2)
+	@Column(name = "org_order")
+	private Float orgOrder;
 
-    @Column(name = "is_leaf")
-    private Boolean isLeaf;
+	@Column(name = "is_leaf")
+	private Boolean isLeaf;
 
-    @ManyToOne
-    private Organization upper;
+	@ManyToOne
+	private Organization upper;
 
-    // jhipster-needle-entity-add-field - Jhipster will add fields here, do not remove
-    public Long getId() {
-        return id;
-    }
+	// jhipster-needle-entity-add-field - Jhipster will add fields here, do not
+	// remove
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getOrgCode() {
-        return orgCode;
-    }
+	public String getOrgCode() {
+		return orgCode;
+	}
 
-    public Organization orgCode(String orgCode) {
-        this.orgCode = orgCode;
-        return this;
-    }
+	public Organization orgCode(String orgCode) {
+		this.orgCode = orgCode;
+		return this;
+	}
 
-    public void setOrgCode(String orgCode) {
-        this.orgCode = orgCode;
-    }
+	public void setOrgCode(String orgCode) {
+		this.orgCode = orgCode;
+	}
 
-    public String getOrgName() {
-        return orgName;
-    }
+	public String getOrgName() {
+		return orgName;
+	}
 
-    public Organization orgName(String orgName) {
-        this.orgName = orgName;
-        return this;
-    }
+	public Organization orgName(String orgName) {
+		this.orgName = orgName;
+		return this;
+	}
 
-    public void setOrgName(String orgName) {
-        this.orgName = orgName;
-    }
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
 
-    public String getOrgFlag() {
-        return orgFlag;
-    }
+	public String getOrgDescription() {
+		return orgDescription;
+	}
 
-    public Organization orgFlag(String orgFlag) {
-        this.orgFlag = orgFlag;
-        return this;
-    }
+	public Organization orgDescription(String orgDescription) {
+		this.orgDescription = orgDescription;
+		return this;
+	}
 
-    public void setOrgFlag(String orgFlag) {
-        this.orgFlag = orgFlag;
-    }
+	public void setOrgDescription(String orgDescription) {
+		this.orgDescription = orgDescription;
+	}
 
-    public String getOrgDescription() {
-        return orgDescription;
-    }
+	public String getOrgFullName() {
+		return orgFullName;
+	}
 
-    public Organization orgDescription(String orgDescription) {
-        this.orgDescription = orgDescription;
-        return this;
-    }
+	public void setOrgFullName(String orgFullName) {
+		this.orgFullName = orgFullName;
+	}
 
-    public void setOrgDescription(String orgDescription) {
-        this.orgDescription = orgDescription;
-    }
+	public Integer getOrgFlag() {
+		return orgFlag;
+	}
 
-    public Long getOrgLft() {
-        return orgLft;
-    }
+	public void setOrgFlag(Integer orgFlag) {
+		this.orgFlag = orgFlag;
+	}
 
-    public Organization orgLft(Long orgLft) {
-        this.orgLft = orgLft;
-        return this;
-    }
+	public String getOrgIdentity() {
+		return orgIdentity;
+	}
 
-    public void setOrgLft(Long orgLft) {
-        this.orgLft = orgLft;
-    }
+	public void setOrgIdentity(String orgIdentity) {
+		this.orgIdentity = orgIdentity;
+	}
 
-    public Long getOrgRgt() {
-        return orgRgt;
-    }
+	public Integer getOrgLevel() {
+		return orgLevel;
+	}
 
-    public Organization orgRgt(Long orgRgt) {
-        this.orgRgt = orgRgt;
-        return this;
-    }
+	public void setOrgLevel(Integer orgLevel) {
+		this.orgLevel = orgLevel;
+	}
 
-    public void setOrgRgt(Long orgRgt) {
-        this.orgRgt = orgRgt;
-    }
+	public Boolean getIsLeaf() {
+		return isLeaf;
+	}
 
-    public Long getOrgLevel() {
-        return orgLevel;
-    }
+	public Float getOrgOrder() {
+		return orgOrder;
+	}
 
-    public Organization orgLevel(Long orgLevel) {
-        this.orgLevel = orgLevel;
-        return this;
-    }
+	public Organization orgOrder(Float orgOrder) {
+		this.orgOrder = orgOrder;
+		return this;
+	}
 
-    public void setOrgLevel(Long orgLevel) {
-        this.orgLevel = orgLevel;
-    }
+	public void setOrgOrder(Float orgOrder) {
+		this.orgOrder = orgOrder;
+	}
 
-    public Float getOrgOrder() {
-        return orgOrder;
-    }
+	public Boolean isIsLeaf() {
+		return isLeaf;
+	}
 
-    public Organization orgOrder(Float orgOrder) {
-        this.orgOrder = orgOrder;
-        return this;
-    }
+	public Organization isLeaf(Boolean isLeaf) {
+		this.isLeaf = isLeaf;
+		return this;
+	}
 
-    public void setOrgOrder(Float orgOrder) {
-        this.orgOrder = orgOrder;
-    }
+	public void setIsLeaf(Boolean isLeaf) {
+		this.isLeaf = isLeaf;
+	}
 
-    public Boolean isIsLeaf() {
-        return isLeaf;
-    }
+	public Organization getUpper() {
+		return upper;
+	}
 
-    public Organization isLeaf(Boolean isLeaf) {
-        this.isLeaf = isLeaf;
-        return this;
-    }
+	public Organization upper(Organization organization) {
+		this.upper = organization;
+		return this;
+	}
 
-    public void setIsLeaf(Boolean isLeaf) {
-        this.isLeaf = isLeaf;
-    }
+	public void setUpper(Organization organization) {
+		this.upper = organization;
+	}
+	
+	// jhipster-needle-entity-add-getters-setters - Jhipster will add getters
+	// and setters here, do not remove
 
-    public Organization getUpper() {
-        return upper;
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		Organization organization = (Organization) o;
+		if (organization.getId() == null || getId() == null) {
+			return false;
+		}
+		return Objects.equals(getId(), organization.getId());
+	}
+	
+	
 
-    public Organization upper(Organization organization) {
-        this.upper = organization;
-        return this;
-    }
+	@Override
+	public String toString() {
+		return "Organization [id=" + id + ", orgCode=" + orgCode + ", orgName=" + orgName + ", orgFullName="
+				+ orgFullName + ", orgFlag=" + orgFlag + ", orgIdentity=" + orgIdentity + ", orgDescription="
+				+ orgDescription + ", orgLevel=" + orgLevel + ", orgOrder=" + orgOrder + ", isLeaf=" + isLeaf
+				+ ", upper=" + upper + "]";
+	}
 
-    public void setUpper(Organization organization) {
-        this.upper = organization;
-    }
-    // jhipster-needle-entity-add-getters-setters - Jhipster will add getters and setters here, do not remove
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getId());
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Organization organization = (Organization) o;
-        if (organization.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), organization.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getId());
-    }
-
-    @Override
-    public String toString() {
-        return "Organization{" +
-            "id=" + getId() +
-            ", orgCode='" + getOrgCode() + "'" +
-            ", orgName='" + getOrgName() + "'" +
-            ", orgFlag='" + getOrgFlag() + "'" +
-            ", orgDescription='" + getOrgDescription() + "'" +
-            ", lastModifiedBy='" + getLastModifiedBy() + "'" +
-            ", lastModifiedDate='" + getLastModifiedDate() + "'" +
-            ", orgLft='" + getOrgLft() + "'" +
-            ", orgRgt='" + getOrgRgt() + "'" +
-            ", orgLevel='" + getOrgLevel() + "'" +
-            ", orgOrder='" + getOrgOrder() + "'" +
-            ", isLeaf='" + isIsLeaf() + "'" +
-            "}";
-    }
 }

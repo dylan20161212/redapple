@@ -26,11 +26,11 @@ public interface UserRepository extends BaseRepository<User> {
 
 	String USERS_BY_EMAIL_CACHE = "usersByEmail";
 
-	Optional<User> findOneByActivationKey(String activationKey);
+//	Optional<User> findOneByActivationKey(String activationKey);
 
 	List<User> findAllByActivatedIsFalseAndCreatedDateBefore(Instant dateTime);
 
-	Optional<User> findOneByResetKey(String resetKey);
+//	Optional<User> findOneByResetKey(String resetKey);
 
 	@Cacheable(cacheNames = USERS_BY_EMAIL_CACHE)
 	Optional<User> findOneByEmailIgnoreCase(String email);

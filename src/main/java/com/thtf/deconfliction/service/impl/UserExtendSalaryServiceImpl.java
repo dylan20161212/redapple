@@ -239,7 +239,7 @@ public class UserExtendSalaryServiceImpl implements UserExtendSalaryService {
     	ues.setUserName(userextend.getName());
     	if(this.loginUser !=null && this.loginUser.getId() != null){
     		ues.setsStaffId(this.loginUser.getId());
-        	ues.setsStaffName(this.loginUser.getFirstName());
+        	ues.setsStaffName(this.loginUser.getRealName());
     	}
     	
     	ues.setsMonth(this.getUpMonth());

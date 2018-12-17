@@ -17,7 +17,7 @@ public class RoleDTO implements Serializable {
 
 	private String roleDescription;
 
-	private String roleFlag;
+	private Integer roleFlag;
 
 	private ZonedDateTime roleEffDate;
 
@@ -57,11 +57,11 @@ public class RoleDTO implements Serializable {
 		this.roleDescription = roleDescription;
 	}
 
-	public String getRoleFlag() {
+	public Integer getRoleFlag() {
 		return roleFlag;
 	}
 
-	public void setRoleFlag(String roleFlag) {
+	public void setRoleFlag(Integer roleFlag) {
 		this.roleFlag = roleFlag;
 	}
 
@@ -124,7 +124,7 @@ public class RoleDTO implements Serializable {
 	public RoleDTO() {
 	}
 
-	public RoleDTO(Long id, String roleName, String roleDescription, String roleFlag, ZonedDateTime roleEffDate,
+	public RoleDTO(Long id, String roleName, String roleDescription, Integer roleFlag, ZonedDateTime roleEffDate,
 			ZonedDateTime roleExpDate, Set<ResourceDTO> resources, String createdBy, Instant createdDate,
 			String lastModifiedBy, Instant lastModifiedDate) {
 		super();
