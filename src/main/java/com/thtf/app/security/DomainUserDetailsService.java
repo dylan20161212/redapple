@@ -84,7 +84,7 @@ public class DomainUserDetailsService implements UserDetailsService {
 				throw new UserNotActivatedException("User " + lowercaseLogin + " no role");
 			}
 		}
-		List<GrantedAuthority> grantedAuthorities = tempResources.stream().map(CustomGrantedAuthority::new)
+		List<CustomGrantedAuthority> grantedAuthorities = tempResources.stream().map(CustomGrantedAuthority::new)
 				.collect(Collectors.toList());
 		return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(),
 				grantedAuthorities);

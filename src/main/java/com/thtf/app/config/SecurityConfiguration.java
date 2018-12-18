@@ -1,13 +1,20 @@
 package com.thtf.app.config;
 
-import com.thtf.app.security.*;
-import com.thtf.app.security.jwt.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.AuthenticatedVoter;
+import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -19,11 +26,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 
-import javax.annotation.PostConstruct;
+import com.thtf.app.security.AuthoritiesConstants;
+import com.thtf.app.security.CustomVoter;
+import com.thtf.app.security.jwt.JWTConfigurer;
+import com.thtf.app.security.jwt.TokenProvider;
 
 @Configuration
 @EnableWebSecurity
@@ -105,7 +116,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/authenticate").permitAll()
             .antMatchers("/api/account/reset-password/init").permitAll()
             .antMatchers("/api/account/reset-password/finish").permitAll()
-            .antMatchers("/api/**").authenticated()
+            .antMatchers("/api/**").authenticated().accessDecisionManager(this.accessDecisionManager())
             .antMatchers("/management/health").permitAll()
             .antMatchers("/management/info").permitAll()
             .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
@@ -117,4 +128,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private JWTConfigurer securityConfigurerAdapter() {
         return new JWTConfigurer(tokenProvider);
     }
+    
+    
+    //    @Bean
+    public AccessDecisionManager accessDecisionManager() {
+    	List<AccessDecisionVoter<? extends Object>> decisionVoters = new ArrayList<AccessDecisionVoter<? extends Object>>();
+    	decisionVoters.add(new AuthenticatedVoter());
+    	decisionVoters.add(new RoleVoter());
+    	decisionVoters.add(new WebExpressionVoter());
+    	decisionVoters.add(new CustomVoter());
+    	//ConsensusBased voters = new ConsensusBased(decisionVoters);
+    	//UnanimousBased voters = new UnanimousBased(decisionVoters);
+    	//voters.setAllowIfEqualGrantedDeniedDecisions(false);
+    	//voters.setAllowIfAllAbstainDecisions(false);
+        return new UnanimousBased(decisionVoters);
+    }  
 }
