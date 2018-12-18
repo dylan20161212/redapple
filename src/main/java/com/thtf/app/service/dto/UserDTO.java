@@ -26,9 +26,6 @@ public class UserDTO {
 	@Size(min = 1, max = 50)
 	private String realName;
 
-	@Size(max = 50)
-	private String organizationName;
-
 	@Email
 	@Size(min = 5, max = 100)
 	private String email;
@@ -65,19 +62,9 @@ public class UserDTO {
 		this(user.getId(), user.getLogin(), user.getRealName(), user.getEmail(), user.getActivated(),
 				user.getImageUrl(), user.getLangKey(), user.getCreatedBy(), user.getCreatedDate(),
 				user.getLastModifiedBy(), user.getLastModifiedDate(),
-				// user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet()),
 				null,
-				// user.getRoles().stream()
-				// .map((r) -> new RoleDTO(r.getId(), r.getRoleName(),
-				// r.getRoleDescription(), r.getRoleFlag(),
-				// r.getRoleEffDate(), r.getRoleExpDate(), null,
-				// r.getCreatedBy(), r.getCreatedDate(),
-				// r.getLastModifiedBy(), r.getLastModifiedDate()))
-				// .collect(Collectors.toSet()),
 				null,
-				// user.getOrganization() == null ? null :
-				// user.getOrganization().getId(),
-				null, user.getOrganizationName());
+				null);
 	}
 
 	public UserDTO(Long id, String login, String realName, String email, boolean activated, String imageUrl,
@@ -100,7 +87,7 @@ public class UserDTO {
 
 	public UserDTO(Long id, String login, String realName, String email, boolean activated, String imageUrl,
 			String langKey, String createdBy, Instant createdDate, String lastModifiedBy, Instant lastModifiedDate,
-			Set<String> authorities, Set<RoleDTO> roles, Long organizationId, String organizationName) {
+			Set<String> authorities, Set<RoleDTO> roles, Long organizationId) {
 
 		this.id = id;
 		this.login = login;
@@ -116,12 +103,12 @@ public class UserDTO {
 		this.authorities = authorities;
 		this.roles = roles;
 		this.organizationId = organizationId;
-		this.organizationName = organizationName;
+		
 	}
 
 	public UserDTO(Long id, String login, String realName, String email, boolean activated, String imageUrl,
 			String langKey, String createdBy, Instant createdDate, String lastModifiedBy, Instant lastModifiedDate,
-			Set<RoleDTO> roles, Long organizationId, String organizationName) {
+			Set<RoleDTO> roles, Long organizationId) {
 
 		this.id = id;
 		this.login = login;
@@ -136,7 +123,6 @@ public class UserDTO {
 		this.lastModifiedDate = lastModifiedDate;
 		this.roles = roles;
 		this.organizationId = organizationId;
-		this.organizationName = organizationName;
 		Set<String> tempAuthorities = new HashSet<>();
 		Set<ResourceDTO> tempRes = new HashSet<>();
 		for (RoleDTO rd : this.roles) {
@@ -253,14 +239,6 @@ public class UserDTO {
 		return authorities;
 	}
 
-	public String getOrganizationName() {
-		return organizationName;
-	}
-
-	public void setOrganizationName(String organizationName) {
-		this.organizationName = organizationName;
-	}
-
 	public Long getOrganizationId() {
 		return organizationId;
 	}
@@ -304,12 +282,13 @@ public class UserDTO {
 
 	@Override
 	public String toString() {
-		return "UserDTO [id=" + id + ", login=" + login + ", realName=" + realName + ", organizationName="
-				+ organizationName + ", email=" + email + ", imageUrl=" + imageUrl + ", activated=" + activated
-				+ ", langKey=" + langKey + ", createdBy=" + createdBy + ", createdDate=" + createdDate
-				+ ", lastModifiedBy=" + lastModifiedBy + ", lastModifiedDate=" + lastModifiedDate + ", authorities="
-				+ authorities + ", organizationId=" + organizationId + ", organizationOrgName=" + organizationOrgName
-				+ ", roles=" + roles + "]";
+		return "UserDTO [id=" + id + ", login=" + login + ", realName=" + realName + ", email=" + email + ", imageUrl="
+				+ imageUrl + ", activated=" + activated + ", langKey=" + langKey + ", createdBy=" + createdBy
+				+ ", createdDate=" + createdDate + ", lastModifiedBy=" + lastModifiedBy + ", lastModifiedDate="
+				+ lastModifiedDate + ", authorities=" + authorities + ", organizationId=" + organizationId
+				+ ", organizationOrgName=" + organizationOrgName + ", roles=" + roles + "]";
 	}
+
+	
 
 }

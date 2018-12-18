@@ -156,7 +156,7 @@ public class UserService {
 		} else {
 			user.setOrganization(null);// 应该设置为当前登录用户所在的组织结构
 		}
-		user.setOrganizationName(userDTO.getOrganizationName());
+//		user.setOrganizationName(userDTO.getOrganizationName());
 		if (userDTO.getLangKey() == null) {
 			user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
 		} else {
@@ -232,7 +232,7 @@ public class UserService {
 		if (userDTO.getOrganizationId() != null) {
 			user.setOrganization(organizationRepository.findById(userDTO.getOrganizationId()).orElse(null));
 		}
-		user.setOrganizationName(userDTO.getOrganizationName());
+//		user.setOrganizationName(userDTO.getOrganizationName());
 		cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
 		cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
 		log.debug("Changed Information for User: {}", user);
@@ -259,10 +259,7 @@ public class UserService {
 			if (!isContianed) {
 				UserRoleOrganization userRoleOrganization = new UserRoleOrganization();
 				userRoleOrganization.setRole(role);
-				userRoleOrganization.setRoleName(role.getRoleName());
-				userRoleOrganization.setOrgName(userDTO.getOrganizationName());
 				userRoleOrganization.setUser(user);
-				userRoleOrganization.setUserName(user.getLogin());
 				if (userDTO.getOrganizationId() != null) {
 					userRoleOrganization
 							.setOrganization(this.organizationRepository.findById(userDTO.getOrganizationId()).orElse(null));
@@ -395,7 +392,7 @@ public class UserService {
 								r.getRoleEffDate(), r.getRoleExpDate(), null, r.getCreatedBy(), r.getCreatedDate(),
 								r.getLastModifiedBy(), r.getLastModifiedDate()))
 						.collect(Collectors.toSet()),
-				u.getOrganization() == null ? null : u.getOrganization().getId(), u.getOrganizationName()));
+				u.getOrganization() == null ? null : u.getOrganization().getId()));
 
 	}
 
@@ -507,8 +504,8 @@ public class UserService {
 					// r.getCreatedBy(), r.getCreatedDate(),
 					// r.getLastModifiedBy(), r.getLastModifiedDate()))
 					// .collect(Collectors.toSet()),
-					tempUser.getOrganization() == null ? null : tempUser.getOrganization().getId(),
-					tempUser.getOrganizationName());
+					tempUser.getOrganization() == null ? null : tempUser.getOrganization().getId()
+					);
 		}
 		return tempUdto;
 	}

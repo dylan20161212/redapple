@@ -38,9 +38,6 @@ public class Resource extends AbstractAuditingEntity implements Serializable {
 	@Column(name = "res_router_link")
 	private String resRouterLink;
 
-	@Column(name = "res_description")
-	private String resDescription;
-
 	@Size(max = 1)
 	@Column(name = "res_type")
 	private Integer resType;
@@ -57,9 +54,6 @@ public class Resource extends AbstractAuditingEntity implements Serializable {
 
 	@Column(name = "res_exp_date")
 	private ZonedDateTime resExpDate;
-
-	@Column(name = "res_level")
-	private Long resLevel;
 
 	@Column(name = "res_order")
 	private Long resOrder;
@@ -110,13 +104,6 @@ public class Resource extends AbstractAuditingEntity implements Serializable {
 		this.resRouterLink = resRouterLink;
 	}
 
-	public String getResDescription() {
-		return resDescription;
-	}
-
-	public void setResDescription(String resDescription) {
-		this.resDescription = resDescription;
-	}
 
 	public Integer getResType() {
 		return resType;
@@ -158,13 +145,7 @@ public class Resource extends AbstractAuditingEntity implements Serializable {
 		this.resExpDate = resExpDate;
 	}
 
-	public Long getResLevel() {
-		return resLevel;
-	}
-
-	public void setResLevel(Long resLevel) {
-		this.resLevel = resLevel;
-	}
+	
 
 	public Long getResOrder() {
 		return resOrder;
@@ -205,9 +186,9 @@ public class Resource extends AbstractAuditingEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Resource [id=" + id + ", resRouterLink=" + resRouterLink + ", resDescription=" + resDescription
+		return "Resource [id=" + id + ", resRouterLink=" + resRouterLink 
 				+ ", resType=" + resType + ", resOperate=" + resOperate + ", resText=" + resText + ", resEffDate="
-				+ resEffDate + ", resExpDate=" + resExpDate + ", resLevel=" + resLevel + ", resOrder=" + resOrder
+				+ resEffDate + ", resExpDate=" + resExpDate +  ", resOrder=" + resOrder
 				+ ", isLeaf=" + isLeaf + ", resDisabled=" + resDisabled + ", upper=" + upper + "]";
 	}
 

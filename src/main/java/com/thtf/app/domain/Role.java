@@ -54,7 +54,7 @@ public class Role extends AbstractAuditingEntity implements Serializable {
 
 	@ManyToMany
 	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-	@JoinTable(name = "t_role_resource", joinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "resources_id", referencedColumnName = "id"))
+	@JoinTable(name = "sys_role_resource", joinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "resources_id", referencedColumnName = "id"))
 	private Set<Resource> resources = new HashSet<>();
 
 	@ManyToMany(mappedBy = "roles")

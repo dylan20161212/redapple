@@ -22,15 +22,6 @@ public class UserRoleOrganization extends AbstractAuditingEntity implements Seri
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_name")
-    private String userName;
-
-    @Column(name = "role_name")
-    private String roleName;
-
-    @Column(name = "org_name")
-    private String orgName;
-
     @ManyToOne(optional = false)
     @NotNull
     private User user;
@@ -51,44 +42,6 @@ public class UserRoleOrganization extends AbstractAuditingEntity implements Seri
         this.id = id;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public UserRoleOrganization userName(String userName) {
-        this.userName = userName;
-        return this;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public UserRoleOrganization roleName(String roleName) {
-        this.roleName = roleName;
-        return this;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
-    public String getOrgName() {
-        return orgName;
-    }
-
-    public UserRoleOrganization orgName(String orgName) {
-        this.orgName = orgName;
-        return this;
-    }
-
-    public void setOrgName(String orgName) {
-        this.orgName = orgName;
-    }
 
     public User getUser() {
         return user;
@@ -150,13 +103,11 @@ public class UserRoleOrganization extends AbstractAuditingEntity implements Seri
         return Objects.hashCode(getId());
     }
 
-    @Override
-    public String toString() {
-        return "UserRoleOrganization{" +
-            "id=" + getId() +
-            ", userName='" + getUserName() + "'" +
-            ", roleName='" + getRoleName() + "'" +
-            ", orgName='" + getOrgName() + "'" +
-            "}";
-    }
+	@Override
+	public String toString() {
+		return "UserRoleOrganization [id=" + id + ", user=" + user + ", role=" + role + ", organization=" + organization
+				+ "]";
+	}
+
+  
 }

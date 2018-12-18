@@ -45,7 +45,6 @@ public class UserMapper implements EntityMapper<UserDTO, User> {
 			if (authorities != null) {
 				user.setAuthorities(authorities);
 			}
-			user.setOrganizationName(userDTO.getOrganizationName());
 			return user;
 		}
 	}
@@ -89,7 +88,6 @@ public class UserMapper implements EntityMapper<UserDTO, User> {
 			if (authorities != null) {
 				user.setAuthorities(authorities);
 			}
-			user.setOrganizationName(userDTO.getOrganizationName());
 			return user;
 		}
 	}

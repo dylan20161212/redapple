@@ -111,7 +111,6 @@ public class UserExtendServiceImpl implements UserExtendService {
     			user.setPassword(pe.encode("admin"));
     			user.setActivated(true);
     			user.setOrganization(this.organizationRepository.getOne(Long.parseLong(userExtend.getOrganizationId())));
-    			user.setOrganizationName(userExtend.getOrganizationName());
     			user.setEmail(userExtend.getEmail());
 				user.setRealName(userExtend.getName());
 				user.setLangKey("zh-cn");

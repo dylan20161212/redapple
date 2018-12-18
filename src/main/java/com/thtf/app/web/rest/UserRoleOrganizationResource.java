@@ -218,7 +218,7 @@ public class UserRoleOrganizationResource {
 			for (UserRoleOrganization uRoleOrg : listUserRoleOrganization) {
 				if (uRoleOrg.getOrganization() == null) {
 					Organization tempOrg = new Organization();
-					tempOrg.setOrgName(tempUser.getOrganizationName() != null ? tempUser.getOrganizationName() : "");
+//					tempOrg.setOrgName(tempUser.getOrganizationName() != null ? tempUser.getOrganizationName() : "");
 					uRoleOrg.setOrganization(tempOrg);
 				}
 			}

@@ -25,4 +25,6 @@ public interface UserRoleOrganizationRepository  extends BaseRepository<UserRole
 	
 	@Query("select uro.user from UserRoleOrganization uro where uro.role.roleName = :roleName")
 	List<User> findUsers(@Param("roleName")String roleName);
+    
+	UserRoleOrganization findByRoleId(Long selOrgRoleId);
 }

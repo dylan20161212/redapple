@@ -68,9 +68,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
 	@Column(name = "real_name", length = 50)
 	private String realName;
 
-	@Size(max = 50)
-	@Column(name = "organization_name", length = 50)
-	private String organizationName;
 
 	@Email
 	@Size(min = 5, max = 100)
@@ -157,13 +154,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
 		this.email = email;
 	}
 
-	public String getOrganizationName() {
-		return organizationName;
-	}
-
-	public void setOrganizationName(String organizationName) {
-		this.organizationName = organizationName;
-	}
+	
 
 	public String getImageUrl() {
 		return imageUrl;
@@ -242,8 +233,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
 	@Override
 	public String toString() {
 		return "User{" + "login='" + login + '\'' + '\'' + ", email='" + email + '\'' + ", imageUrl='" + imageUrl + '\''
-				+ ", activated='" + activated + '\'' + ", langKey='" + langKey + '\'' + '\'' + ", organizationName='"
-				+ organizationName + '\'' + "}";
+				+ ", activated='" + activated + '\'' + ", langKey='" + langKey + '\'' + '\''  + "}";
 	}
 
 	@Override
