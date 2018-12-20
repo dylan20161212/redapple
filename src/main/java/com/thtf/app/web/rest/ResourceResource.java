@@ -2,6 +2,7 @@ package com.thtf.app.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,10 +26,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.thtf.app.repository.ResourceRepository;
 import com.thtf.app.service.ResourceService;
 import com.thtf.app.service.dto.ResourceDTO;
+import com.thtf.app.web.rest.util.FilterUtil;
 import com.thtf.app.web.rest.util.HeaderUtil;
 import com.thtf.app.web.rest.util.PaginationUtil;
+import com.thtf.app.web.rest.util.SQLConditionUtil;
 
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
@@ -44,9 +49,12 @@ public class ResourceResource {
     private static final String ENTITY_NAME = "resource";
 
     private final ResourceService resourceService;
+    
+    private final ResourceRepository resourceRepository;
 
-    public ResourceResource(ResourceService resourceService) {
+    public ResourceResource(ResourceService resourceService,ResourceRepository resourceRepository) {
         this.resourceService = resourceService;
+        this.resourceRepository = resourceRepository;
     }
 
     /**
@@ -99,12 +107,41 @@ public class ResourceResource {
      */
     @GetMapping("/resources")
     @Timed
-    public ResponseEntity<List<ResourceDTO>> getAllResources(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<ResourceDTO>> getAllResources(ResourceDTO resource,@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Resources");
-        Page<ResourceDTO> page = resourceService.findAll(null);
+        Page<ResourceDTO> page = resourceService.findAll(resource,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/resources");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
+    
+    
+    /**
+     * GET  /resources : get all the resources.
+     *
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of resources in body
+     */
+    @GetMapping("/resourcesy")
+    @Timed
+    public ResponseEntity<List<ResourceDTO>> getAllResourcesy(ResourceDTO resource,@ApiParam Pageable pageable) {
+    	Map<String,Object> filters = new HashMap<String,Object>();
+        if(resource.getResRouterLink()!=null){
+        	FilterUtil.setFilter(filters, "resRouterLink", SQLConditionUtil.Strings.CONTAINS.getValue(), "and", resource.getResRouterLink());
+        }
+        
+        if(resource.getResRouterLink()!=null){
+        	FilterUtil.setFilter(filters, "resText", SQLConditionUtil.Strings.CONTAINS.getValue(), "and", resource.getResText());
+        }
+        filters.put("pagenum", pageable.getPageNumber()+"");
+        filters.put("pagesize", pageable.getPageSize()+"");
+        //TODO
+        Page page = new PageImpl<>(resourceRepository.findAll(filters));
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/resources");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+    
+    
+    
 
     /**
      * GET  /resources : get all the resources.

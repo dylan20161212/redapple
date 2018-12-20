@@ -27,7 +27,9 @@ public interface ResourceService {
      *  @param pageable the pagination information
      *  @return the list of entities
      */
-    Page<ResourceDTO> findAll(Pageable pageable);
+    public Page<ResourceDTO> findAll(ResourceDTO resource,Pageable pageable);
+    
+    
 
     /**
      *  Get the "id" resource.

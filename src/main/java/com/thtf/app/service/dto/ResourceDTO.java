@@ -19,9 +19,6 @@ public class ResourceDTO implements Serializable {
 
 	private String resOperate;
 
-	private String resHref;
-
-	private String resSrc;
 
 	private String resText;
 
@@ -39,23 +36,12 @@ public class ResourceDTO implements Serializable {
 
 	private Instant lastModifiedDate;
 
-	private Long resLft;
-
-	private Long resRgt;
-
-	private Long resLevel;
 
 	private Long resOrder;
 
 	private Boolean isLeaf;
 
 	private Boolean resDisabled;
-
-	private Boolean resChecked;
-
-	private Boolean resExpanded;
-
-	private Boolean resSelected;
 
 	private Long upperId;
 
@@ -99,21 +85,7 @@ public class ResourceDTO implements Serializable {
 		this.resOperate = resOperate;
 	}
 
-	public String getResHref() {
-		return resHref;
-	}
-
-	public void setResHref(String resHref) {
-		this.resHref = resHref;
-	}
-
-	public String getResSrc() {
-		return resSrc;
-	}
-
-	public void setResSrc(String resSrc) {
-		this.resSrc = resSrc;
-	}
+	
 
 	public String getResText() {
 		return resText;
@@ -179,29 +151,7 @@ public class ResourceDTO implements Serializable {
 		this.lastModifiedDate = lastModifiedDate;
 	}
 
-	public Long getResLft() {
-		return resLft;
-	}
-
-	public void setResLft(Long resLft) {
-		this.resLft = resLft;
-	}
-
-	public Long getResRgt() {
-		return resRgt;
-	}
-
-	public void setResRgt(Long resRgt) {
-		this.resRgt = resRgt;
-	}
-
-	public Long getResLevel() {
-		return resLevel;
-	}
-
-	public void setResLevel(Long resLevel) {
-		this.resLevel = resLevel;
-	}
+	
 
 	public Long getResOrder() {
 		return resOrder;
@@ -231,41 +181,7 @@ public class ResourceDTO implements Serializable {
 		this.resDisabled = resDisabled;
 	}
 
-	public Boolean isResChecked() {
-		return resChecked;
-	}
-
-	public Boolean getResChecked() {
-		return resChecked;
-	}
-
-	public void setResChecked(Boolean resChecked) {
-		this.resChecked = resChecked;
-	}
-
-	public Boolean isResExpanded() {
-		return resExpanded;
-	}
 	
-	public Boolean getResExpanded() {
-		return resExpanded;
-	}
-
-	public void setResExpanded(Boolean resExpanded) {
-		this.resExpanded = resExpanded;
-	}
-
-	public Boolean isResSelected() {
-		return resSelected;
-	}
-
-	public Boolean getResSelected() {
-		return resSelected;
-	}
-
-	public void setResSelected(Boolean resSelected) {
-		this.resSelected = resSelected;
-	}
 
 	public Boolean getIsLeaf() {
 		return isLeaf;
@@ -302,15 +218,13 @@ public class ResourceDTO implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ResourceDTO{" + "id=" + getId() + ", resRouterLink='" + getResRouterLink() + "'" + ", resDescription='"
-				+ getResDescription() + "'" + ", resFlag='" + getResFlag() + "'" + ", resOperate='" + getResOperate()
-				+ "'" + ", resHref='" + getResHref() + "'" + ", resSrc='" + getResSrc() + "'" + ", resText='"
-				+ getResText() + "'" + ", resClass='" + getResClass() + "'" + ", resEffDate='" + getResEffDate() + "'"
-				+ ", resExpDate='" + getResExpDate() + "'" + ", lastModifiedBy='" + getLastModifiedBy() + "'"
-				+ ", lastModifiedDate='" + getLastModifiedDate() + "'" + ", resLft='" + getResLft() + "'" + ", resRgt='"
-				+ getResRgt() + "'" + ", resLevel='" + getResLevel() + "'" + ", resOrder='" + getResOrder() + "'"
-				+ ", isLeaf='" + isIsLeaf() + "'" + ", resDisabled='" + isResDisabled() + "'" + 
-				", resChecked='" + isResChecked() + "'"
-				+ ", resExpanded='" + isResExpanded() + "'" + ", resSelected='" + isResSelected() + "'" + "}";
+		return "ResourceDTO [id=" + id + ", resRouterLink=" + resRouterLink + ", resDescription=" + resDescription
+				+ ", resFlag=" + resFlag + ", resOperate=" + resOperate + ", resText=" + resText + ", resClass="
+				+ resClass + ", resEffDate=" + resEffDate + ", resExpDate=" + resExpDate + ", createdBy=" + createdBy
+				+ ", createdDate=" + createdDate + ", lastModifiedBy=" + lastModifiedBy + ", lastModifiedDate="
+				+ lastModifiedDate + ", resOrder=" + resOrder + ", isLeaf=" + isLeaf + ", resDisabled=" + resDisabled
+				+ ", upperId=" + upperId + "]";
 	}
+
+	
 }

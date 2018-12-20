@@ -2,7 +2,9 @@ package com.thtf.app.repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -20,5 +22,7 @@ public interface BaseRepository<T> extends JpaRepository<T, Long> {
 	long getTotalRows(Map<String,Object> filters);
 
 	long getRows(Map<String,Object> filters);
+	
+	Optional<List<T>> findByObject(T entity,Pageable page);
 
 }

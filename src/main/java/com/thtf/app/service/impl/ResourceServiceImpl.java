@@ -1,5 +1,6 @@
 package com.thtf.app.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,36 +63,39 @@ public class ResourceServiceImpl implements ResourceService{
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<ResourceDTO> findAll(Pageable pageable) {
-        log.debug("Request to get all Resources");
-        Map<String, Object> filters = new HashMap<>();
-        
-        String filterscount = (String) filters.get("filterscount");
-		if (filterscount == null || "".equals(filterscount)) {
-			filterscount = "0";
-		}
-
-		filters.put("pagenum", "0");
-		filters.put("pagesize", "65535");
-//		filters.put("recordstartindex", "0");
-//		filters.put("recordendindex", "65535");
-		
-		filters.put("filterscount", (Integer.parseInt(filterscount) + 1) + "");
-		filters.put("filtervalue" + filterscount, "ROLE_DEVELOPER");
-		filters.put("filtercondition" + filterscount, "NOT_EQUAL");
-		filters.put("filterdatafield" + filterscount, "resSrc");
-		filters.put("filteroperator" + filterscount, "1");
-		
-		filterscount = (Integer.parseInt(filterscount) + 1) + "";
-		filters.put("filterscount", (Integer.parseInt(filterscount) + 1) + "");
-		filters.put("filtervalue" + filterscount, "NULL");
-		filters.put("filtercondition" + filterscount, "NULL");
-		filters.put("filterdatafield" + filterscount, "resSrc");
-		filters.put("filteroperator" + filterscount, "1");
-		
-		filters.put("sortdatafield", "resOrder");
-		filters.put("sortorder", "desc");
-        return new PageImpl<>(resourceMapper.toDto(resourceRepository.findAll(filters)),PaginationUtil.getDefaultPageable(),65535);
+    public Page<ResourceDTO> findAll(ResourceDTO resource,Pageable pageable) {
+//        log.debug("Request to get all Resources");
+//        Map<String, Object> filters = new HashMap<>();
+//        
+//        String filterscount = (String) filters.get("filterscount");
+//		if (filterscount == null || "".equals(filterscount)) {
+//			filterscount = "0";
+//		}
+//
+//		filters.put("pagenum", "0");
+//		filters.put("pagesize", "65535");
+////		filters.put("recordstartindex", "0");
+////		filters.put("recordendindex", "65535");
+//		
+//		filters.put("filterscount", (Integer.parseInt(filterscount) + 1) + "");
+//		filters.put("filtervalue" + filterscount, "ROLE_DEVELOPER");
+//		filters.put("filtercondition" + filterscount, "NOT_EQUAL");
+//		filters.put("filterdatafield" + filterscount, "resSrc");
+//		filters.put("filteroperator" + filterscount, "1");
+//		
+//		filterscount = (Integer.parseInt(filterscount) + 1) + "";
+//		filters.put("filterscount", (Integer.parseInt(filterscount) + 1) + "");
+//		filters.put("filtervalue" + filterscount, "NULL");
+//		filters.put("filtercondition" + filterscount, "NULL");
+//		filters.put("filterdatafield" + filterscount, "resSrc");
+//		filters.put("filteroperator" + filterscount, "1");
+//		
+//		filters.put("sortdatafield", "resOrder");
+//		filters.put("sortorder", "desc");
+    	List<Resource> list = this.resourceRepository.findByObject(resourceMapper.toEntity(resource), pageable).orElse(new ArrayList<Resource>());
+    	
+        return new PageImpl<>(resourceMapper.toDto(list),PaginationUtil.getDefaultPageable(),65535);
+    
     }
 
     /**

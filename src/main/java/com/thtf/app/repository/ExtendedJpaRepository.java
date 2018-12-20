@@ -1,6 +1,8 @@
 package com.thtf.app.repository;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
@@ -9,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Parameter;
@@ -21,6 +24,7 @@ import javax.persistence.criteria.Root;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.util.StringUtils;
@@ -66,10 +70,10 @@ public class ExtendedJpaRepository<T> extends SimpleJpaRepository<T, Long> imple
 	 * 
 	 * @see example.springdata.jpa.customall.BaseRepository#customMethod()
 	 */
-//	@Override
-//	public long customMethod() {
-//		return 0;
-//	}
+	// @Override
+	// public long customMethod() {
+	// return 0;
+	// }
 
 	@Override
 	public List<T> findAll(Map<String, Object> filters) {
@@ -122,6 +126,7 @@ public class ExtendedJpaRepository<T> extends SimpleJpaRepository<T, Long> imple
 		Map<String, Object> mapParameters = new HashMap<String, Object>();
 		// 暂时不考虑StringBuffer线程安全和性能问题，所以用String
 		// String queryStr = "SELECT x FROM " + ei.getEntityName() + " x";
+
 		StringBuilder builder = new StringBuilder();
 		StringBuilder builderOrderBy = new StringBuilder();
 		builder.append(ei.getEntityName());
@@ -688,7 +693,7 @@ public class ExtendedJpaRepository<T> extends SimpleJpaRepository<T, Long> imple
 		Number cResults = (Number) query.getSingleResult();
 		return cResults.longValue();
 	}
-    
+
 	@Override
 	public List<T> findAllCriteria(Map<String, Object> filters) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -770,5 +775,90 @@ public class ExtendedJpaRepository<T> extends SimpleJpaRepository<T, Long> imple
 		return sb.toString();
 	}
 
-	
+	@Override
+	public Optional<List<T>> findByObject(T entity, Pageable pageable) {
+		Class c = entity.getClass();
+		String whereCondition = "";
+		Field[] fields = c.getDeclaredFields();
+
+		String queryStr = this.getQueryString(fields, c, entity);
+		this.log.debug(queryStr);
+		List<T> result = this.getQuery(fields, c, queryStr, entity).getResultList();
+
+		return (Optional<List<T>>) Optional.ofNullable(result);
+	}
+
+	private String getQueryString(Field[] fields, Class c,T entity) {
+		String whereCondition = "";
+		for (Field field : fields) {
+			String name = field.getName();
+   
+			Class type = field.getType();
+			String getMethodName = "get" + name.substring(0, 1).toUpperCase() + name.substring(1);
+			Method m = null;
+			Object value = null;
+			try {
+				m = c.getMethod(getMethodName, null);
+				value = m.invoke(entity, null);
+			} catch (NoSuchMethodException e) {
+				// e.printStackTrace();
+				continue;
+			} catch (SecurityException e) {
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+			if(value != null && !String.valueOf(value).isEmpty() && !String.valueOf(value).equals("null")){
+				if (whereCondition.isEmpty()) {
+					whereCondition += name + " like :" + name;
+				} else {
+					whereCondition += " and " + name + " = :" + name;
+				}
+			}
+			
+		}
+		if (!whereCondition.isEmpty()) {
+			whereCondition = " where " + whereCondition;
+		}
+		String query = "select r from " + c.getSimpleName() + " r" + whereCondition;
+		return query;
+	}
+
+	private Query getQuery(Field[] fields, Class c, String queryStr, T entity) {
+		Query query = this.em.createQuery(queryStr);
+		Method m = null;
+		Object value = null;
+		for (Field field : fields) {
+			String name = field.getName();
+			String getMethodName = "get" + name.substring(0, 1).toUpperCase() + name.substring(1);
+			try {
+				m = c.getMethod(getMethodName, null);
+				value = m.invoke(entity, null);
+				//String simpileName = field.getType().getSimpleName();
+				if(value != null && !String.valueOf(value).isEmpty() && !String.valueOf(value).equals("null")){
+					query.setParameter(name, "%"+m.invoke(entity, null)+"%");
+				}
+			} catch (NoSuchMethodException e) {
+				// e.printStackTrace();
+				continue;
+			} catch (SecurityException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+			
+			
+
+		}
+		return query;
+	}
+
 }
