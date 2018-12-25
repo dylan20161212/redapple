@@ -136,7 +136,7 @@ public class AccountResource {
 //								r.getRoleEffDate(), r.getRoleExpDate(), null, r.getCreatedBy(), r.getCreatedDate(),
 //								r.getLastModifiedBy(), r.getLastModifiedDate()))
 //						.collect(Collectors.toSet()),
-				u.getOrganization() == null ? null : u.getOrganization().getId()))
+				u.getOrganization() == null ? null : u.getOrganization().getId(),u.getOrganization() == null ? null : u.getOrganization().getOrgName()))
 				.orElseThrow(() -> new InternalServerErrorException("User could not be found"));
 	}
 	

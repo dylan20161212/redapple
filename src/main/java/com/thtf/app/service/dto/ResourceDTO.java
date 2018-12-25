@@ -5,11 +5,15 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
+import javax.validation.constraints.Max;
+
 public class ResourceDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
+	
+	private Integer resType;
 
 	private String resRouterLink;
 
@@ -18,7 +22,6 @@ public class ResourceDTO implements Serializable {
 	private String resFlag;
 
 	private String resOperate;
-
 
 	private String resText;
 
@@ -44,6 +47,18 @@ public class ResourceDTO implements Serializable {
 	private Boolean resDisabled;
 
 	private Long upperId;
+
+	
+
+
+
+	public Integer getResType() {
+		return resType;
+	}
+
+	public void setResType(Integer resType) {
+		this.resType = resType;
+	}
 
 	public Long getId() {
 		return id;
@@ -84,8 +99,6 @@ public class ResourceDTO implements Serializable {
 	public void setResOperate(String resOperate) {
 		this.resOperate = resOperate;
 	}
-
-	
 
 	public String getResText() {
 		return resText;
@@ -151,8 +164,6 @@ public class ResourceDTO implements Serializable {
 		this.lastModifiedDate = lastModifiedDate;
 	}
 
-	
-
 	public Long getResOrder() {
 		return resOrder;
 	}
@@ -161,18 +172,14 @@ public class ResourceDTO implements Serializable {
 		this.resOrder = resOrder;
 	}
 
-	public Boolean isIsLeaf() {
+	public Boolean getIsLeaf() {
 		return isLeaf;
 	}
 
 	public void setIsLeaf(Boolean isLeaf) {
 		this.isLeaf = isLeaf;
 	}
-	
-	public Boolean isResDisabled() {
-		return resDisabled;
-	}
-	
+
 	public Boolean getResDisabled() {
 		return resDisabled;
 	}
@@ -181,18 +188,12 @@ public class ResourceDTO implements Serializable {
 		this.resDisabled = resDisabled;
 	}
 
-	
-
-	public Boolean getIsLeaf() {
-		return isLeaf;
-	}
-
 	public Long getUpperId() {
 		return upperId;
 	}
 
-	public void setUpperId(Long resourceId) {
-		this.upperId = resourceId;
+	public void setUpperId(Long upperId) {
+		this.upperId = upperId;
 	}
 
 	@Override

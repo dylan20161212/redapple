@@ -50,7 +50,7 @@ public class UserDTO {
 
 	private Long organizationId;
 
-	private String organizationOrgName;
+	private String organizationName;
 
 	private Set<RoleDTO> roles;
 
@@ -64,7 +64,7 @@ public class UserDTO {
 				user.getLastModifiedBy(), user.getLastModifiedDate(),
 				null,
 				null,
-				null);
+				null,user.getOrganization().getOrgName());
 	}
 
 	public UserDTO(Long id, String login, String realName, String email, boolean activated, String imageUrl,
@@ -87,7 +87,7 @@ public class UserDTO {
 
 	public UserDTO(Long id, String login, String realName, String email, boolean activated, String imageUrl,
 			String langKey, String createdBy, Instant createdDate, String lastModifiedBy, Instant lastModifiedDate,
-			Set<String> authorities, Set<RoleDTO> roles, Long organizationId) {
+			Set<String> authorities, Set<RoleDTO> roles, Long organizationId,String organizationName) {
 
 		this.id = id;
 		this.login = login;
@@ -103,6 +103,7 @@ public class UserDTO {
 		this.authorities = authorities;
 		this.roles = roles;
 		this.organizationId = organizationId;
+		this.organizationName = organizationName;
 		
 	}
 
@@ -247,12 +248,13 @@ public class UserDTO {
 		this.organizationId = organizationId;
 	}
 
-	public String getOrganizationOrgName() {
-		return organizationOrgName;
+	
+	public String getOrganizationName() {
+		return organizationName;
 	}
 
-	public void setOrganizationOrgName(String organizationOrgName) {
-		this.organizationOrgName = organizationOrgName;
+	public void setOrganizationName(String organizationName) {
+		this.organizationName = organizationName;
 	}
 
 	public Set<RoleDTO> getRoles() {
@@ -286,7 +288,7 @@ public class UserDTO {
 				+ imageUrl + ", activated=" + activated + ", langKey=" + langKey + ", createdBy=" + createdBy
 				+ ", createdDate=" + createdDate + ", lastModifiedBy=" + lastModifiedBy + ", lastModifiedDate="
 				+ lastModifiedDate + ", authorities=" + authorities + ", organizationId=" + organizationId
-				+ ", organizationOrgName=" + organizationOrgName + ", roles=" + roles + "]";
+				+ ", organizationOrgName=" + organizationName + ", roles=" + roles + "]";
 	}
 
 	

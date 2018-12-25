@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -125,11 +127,11 @@ public class ResourceResource {
     @Timed
     public ResponseEntity<List<ResourceDTO>> getAllResourcesy(ResourceDTO resource,@ApiParam Pageable pageable) {
     	Map<String,Object> filters = new HashMap<String,Object>();
-        if(resource.getResRouterLink()!=null){
-        	FilterUtil.setFilter(filters, "resRouterLink", SQLConditionUtil.Strings.CONTAINS.getValue(), "and", resource.getResRouterLink());
-        }
+//        if(resource.getResRouterLink() != null){
+//        	FilterUtil.setFilter(filters, "resRouterLink", SQLConditionUtil.Strings.CONTAINS.getValue(), "and", resource.getResRouterLink());
+//        }
         
-        if(resource.getResRouterLink()!=null){
+        if(resource.getResText() != null){
         	FilterUtil.setFilter(filters, "resText", SQLConditionUtil.Strings.CONTAINS.getValue(), "and", resource.getResText());
         }
         filters.put("pagenum", pageable.getPageNumber()+"");

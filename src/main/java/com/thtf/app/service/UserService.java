@@ -392,7 +392,7 @@ public class UserService {
 								r.getRoleEffDate(), r.getRoleExpDate(), null, r.getCreatedBy(), r.getCreatedDate(),
 								r.getLastModifiedBy(), r.getLastModifiedDate()))
 						.collect(Collectors.toSet()),
-				u.getOrganization() == null ? null : u.getOrganization().getId()));
+				u.getOrganization() == null ? null : u.getOrganization().getId(),u.getOrganization()==null?null:u.getOrganization().getOrgName()));
 
 	}
 
@@ -504,7 +504,8 @@ public class UserService {
 					// r.getCreatedBy(), r.getCreatedDate(),
 					// r.getLastModifiedBy(), r.getLastModifiedDate()))
 					// .collect(Collectors.toSet()),
-					tempUser.getOrganization() == null ? null : tempUser.getOrganization().getId()
+					tempUser.getOrganization() == null ? null : tempUser.getOrganization().getId(),
+							tempUser.getOrganization() == null ? null : tempUser.getOrganization().getOrgName()
 					);
 		}
 		return tempUdto;
