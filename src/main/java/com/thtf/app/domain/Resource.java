@@ -38,7 +38,7 @@ public class Resource extends AbstractAuditingEntity implements Serializable {
 	@Column(name = "res_router_link")
 	private String resRouterLink;
 
-	@Size(max = 1)
+//	@Size(max = 1)
 	@Column(name = "res_type")
 	private Integer resType;
 

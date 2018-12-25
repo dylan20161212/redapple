@@ -51,6 +51,11 @@ public class ResourceServiceImpl implements ResourceService{
     public ResourceDTO save(ResourceDTO resourceDTO) {
         log.debug("Request to save Resource : {}", resourceDTO);
         Resource resource = resourceMapper.toEntity(resourceDTO);
+        Long upperId = resourceDTO.getUpperId();
+        if(upperId != null){
+        	Resource upper = this.resourceRepository.getOne(resourceDTO.getUpperId());
+        	upper.setIsLeaf(false);
+        }
         resource = resourceRepository.save(resource);
         return resourceMapper.toDto(resource);
     }
