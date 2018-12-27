@@ -288,7 +288,7 @@ public class UserDTO {
 				+ imageUrl + ", activated=" + activated + ", langKey=" + langKey + ", createdBy=" + createdBy
 				+ ", createdDate=" + createdDate + ", lastModifiedBy=" + lastModifiedBy + ", lastModifiedDate="
 				+ lastModifiedDate + ", authorities=" + authorities + ", organizationId=" + organizationId
-				+ ", organizationOrgName=" + organizationName + ", roles=" + roles + "]";
+				+ ", organizationName=" + organizationName + ", roles=" + roles + "]";
 	}
 
 	
