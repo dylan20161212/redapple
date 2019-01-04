@@ -88,98 +88,30 @@ public class UserRoleOrganizationResource {
 	@Transactional
 	@PostMapping("/user-role-organizations")
 	@Timed
-	public ResponseEntity<UserRoleOrganizationDTO> createUserRoleOrganization(
-			@Valid @RequestBody UserRoleOrganizationDTO userRoleOrganizationDTO) throws URISyntaxException {
-		log.debug("REST request to save UserRoleOrganization : {}", userRoleOrganizationDTO);
-		// 先判断权限是否合理，如果组织机构不是当前登录人所管理的范围、或者用户主要的组织机构不在当前用户所管理的范围均抛出异常
+	public ResponseEntity<Void> createUserRoleOrganization(
+	        @RequestBody Map<String, Object> params) throws URISyntaxException {
+		log.debug("REST request to save UserRoleOrganization : {}", params);
 
-		User tempUser = userRepository.findById(userRoleOrganizationDTO.getUserId()).orElse(null);
-		List<Organization> rOrgs = this.getMyOrgIds();
-		int ok = 0;
-		for(Organization o : rOrgs){
-			if(o.getId().equals(tempUser.getOrganization().getId())){
-				// 用户满足
-				ok++;
-			}
-			if(o.getId().equals(userRoleOrganizationDTO.getOrganizationId())){
-				// 机构满足
-				ok++;
-			}
-		}
-		if(ok<2){
-			// 无权限
-			throw new UltraViresException();
-		}
-		
-		List<UserRoleOrganization> exists = this.userRoleOrganizationRepository.findByUserIdAndRoleIdAndOrganizationId(
-				userRoleOrganizationDTO.getUserId(), userRoleOrganizationDTO.getRoleId(),
-				userRoleOrganizationDTO.getOrganizationId());
+		long userId = Long.parseLong(params.get("userId").toString());
+        long organizationId = Long.parseLong(params.get("orgId").toString());
+        
+        List<Map<String, Integer>> roleIds = (List<Map<String, Integer>>) params.get("roles");
+        
+        this.userRoleOrganizationRepository.deleteByUserIdAndOrganizationId(userId, organizationId);
+        if(roleIds != null && roleIds.size() > 0) {
+            for(int i = 0 ; i < roleIds.size(); i++) {
+                UserRoleOrganizationDTO uroDTO = new UserRoleOrganizationDTO();
+                uroDTO.setOrganizationId(organizationId);
+                uroDTO.setUserId(userId);
+                uroDTO.setRoleId(roleIds.get(i).get("id").longValue());
+                UserRoleOrganization userRoleOrganization = userRoleOrganizationMapper.toEntity(uroDTO);
+                this.userRoleOrganizationRepository.save(userRoleOrganization);
+            }
+        }
 
-		if (exists != null && !exists.isEmpty()) {
-			userRoleOrganizationDTO.setId(exists.get(0).getId());
-		} else {
-			exists = this.userRoleOrganizationRepository.findByUserIdAndRoleIdAndOrganizationIdIsNull(
-					userRoleOrganizationDTO.getUserId(), userRoleOrganizationDTO.getRoleId());
-			if (exists != null && !exists.isEmpty()) {
-				// 如果存在为空的组织机构，需要判断用户的组织机构是否为空，或者用户的组织机构是否与新增的相同，如果相同则跳过
-//				User tempUser = userRepository.findOne(userRoleOrganizationDTO.getUserId());
-				if (tempUser.getOrganization() != null) {
-					if (tempUser.getOrganization().getId().longValue() == userRoleOrganizationDTO.getOrganizationId()
-							.longValue()) {
-						// 目前的组织机构与新增的组织机构相同
-						userRoleOrganizationDTO.setId(exists.get(0).getId());
-					}
-				} else {
-					// 用户的组织机构还是空，不需要判断，直接认为是相同
-					userRoleOrganizationDTO.setId(exists.get(0).getId());
-				}
-			}
-		}
-		if (userRoleOrganizationDTO.getId() != null) {
-			return ResponseEntity.created(new URI("/api/user-role-organizations/" + userRoleOrganizationDTO.getId()))
-					.headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME,
-							userRoleOrganizationDTO.getId().toString()))
-					.body(userRoleOrganizationDTO);
-		}
-		UserRoleOrganization userRoleOrganization = userRoleOrganizationMapper.toEntity(userRoleOrganizationDTO);
-		userRoleOrganization = userRoleOrganizationRepository.save(userRoleOrganization);
-		UserRoleOrganizationDTO result = userRoleOrganizationMapper.toDto(userRoleOrganization);
-		return ResponseEntity.created(new URI("/api/user-role-organizations/" + result.getId()))
-				.headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString())).body(result);
+		return ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted", null)).build();
 	}
 
-	/**
-	 * PUT /user-role-organizations : Updates an existing userRoleOrganization.
-	 *
-	 * @param userRoleOrganizationDTO
-	 *            the userRoleOrganizationDTO to update
-	 * @return the ResponseEntity with status 200 (OK) and with body the updated
-	 *         userRoleOrganizationDTO, or with status 400 (Bad Request) if the
-	 *         userRoleOrganizationDTO is not valid, or with status 500
-	 *         (Internal Server Error) if the userRoleOrganizationDTO couldn't
-	 *         be updated
-	 * @throws URISyntaxException
-	 *             if the Location URI syntax is incorrect
-	 */
-	@PutMapping("/user-role-organizations")
-	@Timed
-	public ResponseEntity<UserRoleOrganizationDTO> updateUserRoleOrganization(
-			@Valid @RequestBody UserRoleOrganizationDTO userRoleOrganizationDTO) throws URISyntaxException {
-		log.debug("REST request to update UserRoleOrganization : {}", userRoleOrganizationDTO);
-		// xxii
-		// List<UserRoleOrganization> exists =
-		// this.userRoleOrganizationRepository.findByUserIdAndRoleIdAndOrganizationId(userRoleOrganizationDTO.getUserId(),userRoleOrganizationDTO.getRoleId(),userRoleOrganizationDTO.getOrganizationId());
-		if (userRoleOrganizationDTO.getId() == null) {
-			return createUserRoleOrganization(userRoleOrganizationDTO);
-		}
-
-		UserRoleOrganization userRoleOrganization = userRoleOrganizationMapper.toEntity(userRoleOrganizationDTO);
-		userRoleOrganization = userRoleOrganizationRepository.save(userRoleOrganization);
-		UserRoleOrganizationDTO result = userRoleOrganizationMapper.toDto(userRoleOrganization);
-		return ResponseEntity.ok()
-				.headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, userRoleOrganizationDTO.getId().toString()))
-				.body(result);
-	}
 
 	/**
 	 * GET /user-role-organizations : get all the userRoleOrganizations.
@@ -230,6 +162,10 @@ public class UserRoleOrganizationResource {
 				}
 			}
 		}
+		// 允许复杂请求（如：跨域）获取header中的seluserorgrole字段，参考：https://blog.csdn.net/wanglui1990/article/details/79180887
+        List<String> exposedHeaders = new ArrayList<String>();
+        exposedHeaders.add("seluserorgrole");
+        headers.setAccessControlExposeHeaders(exposedHeaders);
 		return new ResponseEntity<>(userRoleOrganizationMapper.toDto(listUserRoleOrganization), headers, HttpStatus.OK);
 	}
 
@@ -302,6 +238,33 @@ public class UserRoleOrganizationResource {
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user-role-organizationsx");
 		return new ResponseEntity<>(userRoleOrganizationMapper.toDto(page.getContent()), headers, HttpStatus.OK);
 	}
+	
+	/**
+     * GET /user-role-organizationsx/uo : get all the userRoleOrganizations.
+     *
+     * @param pageable
+     *            the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of
+     *         userRoleOrganizations in body
+     */
+
+    @GetMapping("/user-role-organizationsx/uo/{userIdAndOrganizationId}")
+    @Timed
+    public ResponseEntity<List<UserRoleOrganizationDTO>> getUserRoleOrganizationsByUserIdAndOrganizationId(
+            @RequestParam Map<String, Object> params, @PathVariable String userIdAndOrganizationId) {
+        log.debug("REST request to get a page of UserRoleOrganizations" + userIdAndOrganizationId);
+        long userId = 0;
+        long organizationId = 0;
+        if(userIdAndOrganizationId != null && userIdAndOrganizationId.indexOf("-") > 0) {
+           userId =  Long.parseLong(userIdAndOrganizationId.split("-")[0]);
+           organizationId =  Long.parseLong(userIdAndOrganizationId.split("-")[1]);
+        }
+        // long userId = Long.parseLong(params.get("userId").toString());
+        // long organizationId = Long.parseLong(params.get("organizationId").toString());
+        final List<UserRoleOrganization> datas = userRoleOrganizationRepository.findByUserIdAndOrganizationIdOrderByIdAsc(userId, organizationId);
+
+        return new ResponseEntity<>(userRoleOrganizationMapper.toDto(datas), HttpStatus.OK);
+    }
 
 	/**
 	 * GET /user-role-organizations/:id : get the "id" userRoleOrganization.

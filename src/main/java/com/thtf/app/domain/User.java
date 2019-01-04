@@ -110,7 +110,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
 	@JsonIgnore
 	@ManyToMany
-	@JoinTable(name = "jhi_user_authority", joinColumns = {
+	@JoinTable(name = "sys_user_authority", joinColumns = {
 			@JoinColumn(name = "user_id", referencedColumnName = "id") }, inverseJoinColumns = {
 					@JoinColumn(name = "authority_name", referencedColumnName = "name") })
 	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -120,7 +120,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
 	@JsonIgnore
 	// @ManyToMany(fetch=FetchType.EAGER)
 	@ManyToMany
-	@JoinTable(name = "t_user_role_organization", joinColumns = {
+	@JoinTable(name = "sys_user_role_organization", joinColumns = {
 			@JoinColumn(name = "user_id", referencedColumnName = "id") }, inverseJoinColumns = {
 					@JoinColumn(name = "role_id", referencedColumnName = "id") })
 	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)

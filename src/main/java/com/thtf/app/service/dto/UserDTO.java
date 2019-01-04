@@ -64,7 +64,8 @@ public class UserDTO {
 				user.getLastModifiedBy(), user.getLastModifiedDate(),
 				null,
 				null,
-				user.getOrganization().getId(),user.getOrganization().getOrgName());
+				user.getOrganization().getId(),
+				user.getOrganization().getOrgName());
 	}
 
 	public UserDTO(Long id, String login, String realName, String email, boolean activated, String imageUrl,

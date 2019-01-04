@@ -18,7 +18,7 @@ public interface BaseRepository<T> extends JpaRepository<T, Long> {
 	
 	List<T> findAllCriteria(Map<String,Object> filters);
 	
-//	@EntityGraph(value="withRoles")
+	@EntityGraph(value="withRoles")
 	List<T> findAllNative(Map<String,Object> filters);
 	
 	long getTotalRows(Map<String,Object> filters);

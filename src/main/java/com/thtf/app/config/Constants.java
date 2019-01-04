@@ -10,7 +10,7 @@ public final class Constants {
 
     public static final String SYSTEM_ACCOUNT = "system";
     public static final String ANONYMOUS_USER = "anonymoususer";
-    public static final String DEFAULT_LANGUAGE = "zh-cn";
+    public static final String DEFAULT_LANGUAGE = "zh-CN";
     
     private Constants() {
     }
