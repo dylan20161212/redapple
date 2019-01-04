@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -17,6 +18,7 @@ public interface BaseRepository<T> extends JpaRepository<T, Long> {
 	
 	List<T> findAllCriteria(Map<String,Object> filters);
 	
+//	@EntityGraph(value="withRoles")
 	List<T> findAllNative(Map<String,Object> filters);
 	
 	long getTotalRows(Map<String,Object> filters);

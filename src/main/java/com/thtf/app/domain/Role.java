@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -52,7 +53,7 @@ public class Role extends AbstractAuditingEntity implements Serializable {
 	@Column(name = "role_exp_date")
 	private ZonedDateTime roleExpDate;
 
-	@ManyToMany
+	@ManyToMany(fetch=FetchType.LAZY)
 	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	@JoinTable(name = "sys_role_resource", joinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "resources_id", referencedColumnName = "id"))
 	private Set<Resource> resources = new HashSet<>();

@@ -356,7 +356,11 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public Page<UserDTO> getAllManagedUsers(Map<String, Object> filters) {
 		// 开始设置过滤条件
-		List<Organization> orgList = this.getMyOrgIds();
+//		List<Organization> orgList = this.getMyOrgIds();
+		List<Organization> orgList = new ArrayList<Organization>();
+		Organization org = new Organization();
+				org.setId(41L);
+		orgList.add(org);
 		List<Long> lOrgIds = orgList.stream().map(Organization::getId).collect(Collectors.toList());
 
 		String filterscount = (String) filters.get("filterscount");
@@ -368,7 +372,13 @@ public class UserService {
 		filters.put("filtercondition" + filterscount, "IN");
 		filters.put("filterdatafield" + filterscount, "organization");
 		filters.put("filteroperator" + filterscount, "0");
-		return new PageImpl<User>(userRepository.findAllNative(filters), PaginationUtil.getDefaultPageable(),
+		List<User> userList = userRepository.findAllNative(filters);
+		for (User user : userList) {
+			Organization org4 = user.getOrganization();
+			org4.getOrgName();
+			
+		}
+		return new PageImpl<User>(userList, PaginationUtil.getDefaultPageable(),
 				userRepository.getRows(filters)).map(UserDTO::new);
 	}
 
