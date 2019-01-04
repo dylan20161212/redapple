@@ -19,6 +19,8 @@ public interface UserRoleOrganizationRepository  extends BaseRepository<UserRole
 	
 	List<UserRoleOrganization> findByUserIdOrderByIdAsc(Long id);
 	
+	List<UserRoleOrganization> findByUserIdAndOrganizationIdOrderByIdAsc(Long userId, Long organizationId);
+	
 	List<UserRoleOrganization> findByUserIdAndRoleIdAndOrganizationId(Long userId,Long roleId,Long organizationId);
 	
 	List<UserRoleOrganization> findByUserIdAndRoleIdAndOrganizationIdIsNull(Long userId,Long roleId);
@@ -27,4 +29,6 @@ public interface UserRoleOrganizationRepository  extends BaseRepository<UserRole
 	List<User> findUsers(@Param("roleName")String roleName);
     
 	UserRoleOrganization findByRoleId(Long selOrgRoleId);
+	
+	void deleteByUserIdAndOrganizationId(long userId, long organizationId);
 }

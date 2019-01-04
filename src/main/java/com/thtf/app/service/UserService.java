@@ -176,8 +176,7 @@ public class UserService {
 		// user.setRoles(userDTO.getRoles().stream().map(r ->
 		// roleMapper.toEntity(r)).collect(Collectors.toSet()));
 		userRepository.save(user);
-		this.userRoleOrganizationRepository
-				.saveAll(this.getNeedAdded(userDTO, new ArrayList<UserRoleOrganization>(), user));
+		this.userRoleOrganizationRepository.saveAll(this.getNeedAdded(userDTO, user));
 		cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
 		cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
 		log.debug("Created Information for User: {}", user);
@@ -222,7 +221,6 @@ public class UserService {
 	public Optional<UserDTO> updateUser(UserDTO userDTO) {
 
 		User user = userRepository.findById(userDTO.getId()).orElse(null);
-		List<UserRoleOrganization> exists = this.userRoleOrganizationRepository.findByUserId(user.getId());
 		user.setLogin(userDTO.getLogin());
 		user.setRealName(userDTO.getRealName());
 		user.setEmail(userDTO.getEmail());
@@ -232,43 +230,31 @@ public class UserService {
 		if (userDTO.getOrganizationId() != null) {
 			user.setOrganization(organizationRepository.findById(userDTO.getOrganizationId()).orElse(null));
 		}
-//		user.setOrganizationName(userDTO.getOrganizationName());
 		cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
 		cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
 		log.debug("Changed Information for User: {}", user);
+		if(userDTO.getId() != null){
+            this.userRoleOrganizationRepository.deleteByUserIdAndOrganizationId(userDTO.getId(), userDTO.getOrganizationId());
+        }
 		user = this.userRepository.save(user);
-		this.userRoleOrganizationRepository.saveAll(this.getNeedAdded(userDTO, exists, user));
+		this.userRoleOrganizationRepository.saveAll(this.getNeedAdded(userDTO, user));
 		return Optional.of(user).map(UserDTO::new);
 	}
 
-	private List<UserRoleOrganization> getNeedAdded(UserDTO userDTO, List<UserRoleOrganization> exists, User user) {
+	private List<UserRoleOrganization> getNeedAdded(UserDTO userDTO, User user) {
 		List<UserRoleOrganization> added = new ArrayList<>();
 		Set<Role> dtoRoles = userDTO.getRoles().stream().map(roleMapper::toEntity).collect(Collectors.toSet());
 		for (Role role : dtoRoles) {
-			boolean isContianed = false;
-			for (UserRoleOrganization userRoleOrganization : exists) {
-				if (userRoleOrganization.getOrganization() == null) {
-					userRoleOrganization.setOrganization(user.getOrganization());
-				}
-				if (role.getId() == userRoleOrganization.getRole().getId() && (userDTO.getOrganizationId()
-						.longValue() == userRoleOrganization.getOrganization().getId().longValue())) {
-					isContianed = true;
-					break;
-				}
-			}
-			if (!isContianed) {
-				UserRoleOrganization userRoleOrganization = new UserRoleOrganization();
-				userRoleOrganization.setRole(role);
-				userRoleOrganization.setUser(user);
-				if (userDTO.getOrganizationId() != null) {
-					userRoleOrganization
-							.setOrganization(this.organizationRepository.findById(userDTO.getOrganizationId()).orElse(null));
-				} else {
-					userRoleOrganization.setOrganization(null);
-				}
-
-				added.add(userRoleOrganization);
-			}
+		    UserRoleOrganization userRoleOrganization = new UserRoleOrganization();
+            userRoleOrganization.setRole(role);
+            userRoleOrganization.setUser(user);
+            if (userDTO.getOrganizationId() != null) {
+                userRoleOrganization
+                        .setOrganization(this.organizationRepository.findById(userDTO.getOrganizationId()).orElse(null));
+            } else {
+                userRoleOrganization.setOrganization(null);
+            }
+            added.add(userRoleOrganization);
 		}
 		return added;
 	}
