@@ -15,9 +15,9 @@ public interface UserRoleOrganizationMapper extends EntityMapper<UserRoleOrganiz
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.login", target = "userLogin")
     @Mapping(source = "role.id", target = "roleId")
-    @Mapping(source = "role.roleName", target = "roleRoleName")
+    @Mapping(source = "role.roleName", target = "roleName")
     @Mapping(source = "organization.id", target = "organizationId")
-    @Mapping(source = "organization.orgName", target = "organizationOrgName")
+    @Mapping(source = "organization.orgName", target = "orgName")
     UserRoleOrganizationDTO toDto(UserRoleOrganization userRoleOrganization); 
 
     @Mapping(source = "userId", target = "user")

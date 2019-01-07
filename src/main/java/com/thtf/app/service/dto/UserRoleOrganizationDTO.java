@@ -28,11 +28,7 @@ public class UserRoleOrganizationDTO implements Serializable {
 
     private Long roleId;
 
-    private String roleRoleName;
-
     private Long organizationId;
-
-    private String organizationOrgName;
 
     public Long getId() {
         return id;
@@ -90,28 +86,12 @@ public class UserRoleOrganizationDTO implements Serializable {
         this.roleId = roleId;
     }
 
-    public String getRoleRoleName() {
-        return roleRoleName;
-    }
-
-    public void setRoleRoleName(String roleRoleName) {
-        this.roleRoleName = roleRoleName;
-    }
-
     public Long getOrganizationId() {
         return organizationId;
     }
 
     public void setOrganizationId(Long organizationId) {
         this.organizationId = organizationId;
-    }
-
-    public String getOrganizationOrgName() {
-        return organizationOrgName;
-    }
-
-    public void setOrganizationOrgName(String organizationOrgName) {
-        this.organizationOrgName = organizationOrgName;
     }
 
     @Override
