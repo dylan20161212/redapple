@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,7 +45,7 @@ public class Organization extends AbstractAuditingEntity implements Serializable
 	@Column(name = "org_full_name")
 	private String orgFullName;
 
-	@Size(max = 1)
+	
 	@Column(name = "org_flag")
 	private Integer orgFlag;
 
@@ -56,18 +57,16 @@ public class Organization extends AbstractAuditingEntity implements Serializable
 	@Column(name = "org_description")
 	private String orgDescription;
 
-	@Size(max = 2)
 	@Column(name = "org_level")
 	private Integer orgLevel;
 
-	@Size(max = 2)
 	@Column(name = "org_order")
 	private Float orgOrder;
 
 	@Column(name = "is_leaf")
 	private Boolean isLeaf;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Organization upper;
 
 	// jhipster-needle-entity-add-field - Jhipster will add fields here, do not

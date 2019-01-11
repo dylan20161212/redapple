@@ -27,4 +27,6 @@ public interface OrganizationRepository extends BaseRepository<Organization> {
 	List<Organization> findByOrgCode(String string);
 
 	List<Organization> findByOrgDescription(String string);
+	
+	Long countByUpperId(Long upperId) ;
 }

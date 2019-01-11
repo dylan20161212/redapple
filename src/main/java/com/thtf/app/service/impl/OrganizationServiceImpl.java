@@ -67,6 +67,11 @@ public class OrganizationServiceImpl implements OrganizationService {
 		log.debug("Request to save Organization : {}", organizationDTO);
 		Organization organization = organizationMapper.toEntity(organizationDTO);
 		organization = organizationRepository.save(organization);
+		if(organizationDTO.getUpperId()!=null) {			
+			Organization parent = organizationRepository.getOne(organizationDTO.getUpperId()) ;
+			parent.setIsLeaf(false);
+			organizationRepository.save(parent) ;
+		}
 		return organizationMapper.toDto(organization);
 	}
 
@@ -192,5 +197,31 @@ public class OrganizationServiceImpl implements OrganizationService {
 		// 因为是同步方式加载，所以只需要一次全部查询出来，前端会自动加载为树形
 		return organizationRepository.findAll().stream().map(organizationMapper::toDto)
 				.collect(Collectors.toCollection(LinkedList::new));
+	}
+	
+	@Override
+	public void delete(Long id, Long upperId) {
+		
+		log.debug("删除id为{}的机构。",id);
+		organizationRepository.deleteById(id);
+		if(upperId != null) {
+			Organization parent = organizationRepository.getOne(upperId) ;
+			long childNum = organizationRepository.countByUpperId(upperId) ;
+			log.debug("删除后上级节点还拥有{}个子节点",childNum) ;
+			if(childNum == 0) {
+				parent.setIsLeaf(true);
+				organizationRepository.save(parent) ;
+			}
+			
+		}
+		
+	}
+	
+	@Override
+	public void changeOrganizationFlag(Long id) {
+		
+		Organization org = organizationRepository.getOne(id) ;
+		org.setOrgFlag(org.getOrgFlag()==1?0:1);
+		organizationRepository.save(org) ;
 	}
 }

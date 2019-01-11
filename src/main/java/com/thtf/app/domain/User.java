@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,6 +17,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -39,11 +43,26 @@ import io.swagger.annotations.ApiModelProperty;
 @Entity
 @Table(name = "sys_user")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-// @NamedEntityGraph(name = "withRoles", attributeNodes =
-// @NamedAttributeNode(value = "roles", subgraph = "subgraphroles"), subgraphs =
-// {
-// @NamedSubgraph(name = "subgraphroles", attributeNodes =
-// @NamedAttributeNode("resources")) })
+//@NamedEntityGraph(name = "withRoles", 
+//	attributeNodes ={
+//						@NamedAttributeNode(value = "roles", subgraph = "subgraphroles"), 
+//						@NamedAttributeNode(value = "organization" , subgraph = "subgraphupper")},
+//						subgraphs =
+//									{
+//											@NamedSubgraph(name = "subgraphroles", 
+//													attributeNodes =
+//																@NamedAttributeNode("resources")),
+//											@NamedSubgraph(name = "subgraphupper", 
+//											attributeNodes =
+//														@NamedAttributeNode("upper"))
+//											
+//					    }
+//						
+//)
+
+
+
+
 public class User extends AbstractAuditingEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -113,7 +132,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
 	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	private Set<UserRoleOrganization> userRoleOrganizations = new HashSet<>();
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "organization_id")
 	private Organization organization;
 

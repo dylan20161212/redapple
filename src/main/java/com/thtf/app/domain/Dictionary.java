@@ -39,22 +39,18 @@ public class Dictionary extends AbstractAuditingEntity implements Serializable {
 	@Column(name = "dic_value", length = 50, nullable = false)
 	private String dicValue;
 
-	@Size(max = 2)
 	@Column(name = "dic_flag", length = 2)
-	private String dicFlag;
+	private Integer dicFlag;
 
 	@Size(max = 200)
 	@Column(name = "dic_description", length = 200)
 	private String dicDescription;
 
-	@Column(name = "dic_level")
-	private Integer dicLevel;
-
 	@Column(name = "dic_order")
 	private Float dicOrder;
 
-	@Column(name = "leaf")
-	private Boolean leaf;
+	@Column(name = "is_leaf")
+	private Boolean isLeaf;
 
 	@Column(name = "dic_disabled")
 	private Boolean dicDisabled;
@@ -115,16 +111,13 @@ public class Dictionary extends AbstractAuditingEntity implements Serializable {
 		this.dicValue = dicValue;
 	}
 
-	public String getDicFlag() {
+	
+
+	public Integer getDicFlag() {
 		return dicFlag;
 	}
 
-	public Dictionary dicFlag(String dicFlag) {
-		this.dicFlag = dicFlag;
-		return this;
-	}
-
-	public void setDicFlag(String dicFlag) {
+	public void setDicFlag(Integer dicFlag) {
 		this.dicFlag = dicFlag;
 	}
 
@@ -141,22 +134,7 @@ public class Dictionary extends AbstractAuditingEntity implements Serializable {
 		this.dicDescription = dicDescription;
 	}
 
-	public Boolean getLeaf() {
-		return leaf;
-	}
-
-	public Integer getDicLevel() {
-		return dicLevel;
-	}
-
-	public Dictionary dicLevel(Integer dicLevel) {
-		this.dicLevel = dicLevel;
-		return this;
-	}
-
-	public void setDicLevel(Integer dicLevel) {
-		this.dicLevel = dicLevel;
-	}
+	
 
 	public Float getDicOrder() {
 		return dicOrder;
@@ -171,17 +149,14 @@ public class Dictionary extends AbstractAuditingEntity implements Serializable {
 		this.dicOrder = dicOrder;
 	}
 
-	public Boolean isLeaf() {
-		return leaf;
+	
+
+	public Boolean getIsLeaf() {
+		return isLeaf;
 	}
 
-	public Dictionary leaf(Boolean leaf) {
-		this.leaf = leaf;
-		return this;
-	}
-
-	public void setLeaf(Boolean leaf) {
-		this.leaf = leaf;
+	public void setIsLeaf(Boolean isLeaf) {
+		this.isLeaf = isLeaf;
 	}
 
 	public Dictionary getUpper() {
@@ -222,8 +197,7 @@ public class Dictionary extends AbstractAuditingEntity implements Serializable {
 	@Override
 	public String toString() {
 		return "Dictionary [id=" + id + ", dicKey=" + dicKey + ", dicValue=" + dicValue + ", dicFlag=" + dicFlag
-				+ ", dicDescription=" + dicDescription + ", dicLevel=" + dicLevel + ", dicOrder=" + dicOrder + ", leaf="
-				+ leaf + ", dicDisabled=" + dicDisabled + ", upper=" + upper + "]";
+				+ ", dicDescription=" + dicDescription +  ", dicOrder=" + dicOrder + ", dicDisabled=" + dicDisabled + ", upper=" + upper + "]";
 	}
 
 }
