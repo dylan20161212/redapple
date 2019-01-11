@@ -119,8 +119,8 @@ public class OrganizationResource {
     @Timed
     public List<OrganizationDTO> getAllOrganizationsx(@RequestParam Map<String, String> params) {
         log.debug("REST request to get all Organizations");
-//        return organizationService.findRootOrTree(params);
-        return organizationService.findOwn();
+        return organizationService.findRootOrTree(params);
+        //return organizationService.findOwn();
         }
    
     @GetMapping("/organizationz")
@@ -156,5 +156,25 @@ public class OrganizationResource {
         log.debug("REST request to delete Organization : {}", id);
         organizationService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+    
+    /**
+     * A删除机构，并更新上级节点 状态
+     * @param params
+     * @return
+     */
+    @DeleteMapping("/organizations")
+    @Timed
+    public ResponseEntity<Void> deleteOrganization(@RequestParam Map<String, String> params){
+    	log.debug("Delete Organization with Map{id:{},upperId:{}}",params.get("id"),params.get("upperId"));
+    	organizationService.delete(Long.parseLong(params.get("id")), params.get("upperId")==null?null:Long.parseLong(params.get("upperId")));
+    	return ResponseEntity.ok().build() ;
+    }
+    
+    @PutMapping("/organizationsf/{id}")
+    @Timed
+    public ResponseEntity<Void> changeOrganizationFlag(@PathVariable Long id){
+    	organizationService.changeOrganizationFlag(id);
+    	return ResponseEntity.ok().build() ;
     }
 }

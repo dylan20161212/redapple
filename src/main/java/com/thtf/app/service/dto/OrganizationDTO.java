@@ -25,6 +25,8 @@ public class OrganizationDTO implements Serializable {
 
     @Size(max = 255)
     private String orgName;
+    
+    private String orgFullName ;
 
     private String orgFlag;
     
@@ -75,7 +77,15 @@ public class OrganizationDTO implements Serializable {
         this.orgName = orgName;
     }
 
-    public String getOrgFlag() {
+    public String getOrgFullName() {
+		return orgFullName;
+	}
+
+	public void setOrgFullName(String orgFullName) {
+		this.orgFullName = orgFullName;
+	}
+
+	public String getOrgFlag() {
         return orgFlag;
     }
 

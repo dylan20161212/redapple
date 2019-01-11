@@ -46,6 +46,13 @@ public interface OrganizationService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+    
+    /**
+     * 删除机构，并更新上级节点isLeaf属性。
+     * @param id 节点id
+     * @param upperId 上级节点id
+     */
+    void delete(Long id , Long upperId) ;
 
     /**
      *  Delete the "id" organization.
@@ -63,4 +70,10 @@ public interface OrganizationService {
 	
 	
 	List<OrganizationDTO> getOrgTree();
+	
+	/**
+	 * A更新机构状态
+	 * @param id
+	 */
+	void changeOrganizationFlag(Long id) ;
 }

@@ -45,7 +45,7 @@ public class Organization extends AbstractAuditingEntity implements Serializable
 	@Column(name = "org_full_name")
 	private String orgFullName;
 
-	@Size(max = 1)
+	
 	@Column(name = "org_flag")
 	private Integer orgFlag;
 
@@ -57,11 +57,9 @@ public class Organization extends AbstractAuditingEntity implements Serializable
 	@Column(name = "org_description")
 	private String orgDescription;
 
-	@Size(max = 2)
 	@Column(name = "org_level")
 	private Integer orgLevel;
 
-	@Size(max = 2)
 	@Column(name = "org_order")
 	private Float orgOrder;
 
