@@ -342,11 +342,7 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public Page<UserDTO> getAllManagedUsers(Map<String, Object> filters) {
 		// 开始设置过滤条件
-//		List<Organization> orgList = this.getMyOrgIds();
-		List<Organization> orgList = new ArrayList<Organization>();
-		Organization org = new Organization();
-				org.setId(41L);
-		orgList.add(org);
+		List<Organization> orgList = this.getMyOrgIds();
 		List<Long> lOrgIds = orgList.stream().map(Organization::getId).collect(Collectors.toList());
 
 		String filterscount = (String) filters.get("filterscount");
@@ -359,11 +355,6 @@ public class UserService {
 		filters.put("filterdatafield" + filterscount, "organization");
 		filters.put("filteroperator" + filterscount, "0");
 		List<User> userList = userRepository.findAllNative(filters);
-		for (User user : userList) {
-			Organization org4 = user.getOrganization();
-			org4.getOrgName();
-			
-		}
 		return new PageImpl<User>(userList, PaginationUtil.getDefaultPageable(),
 				userRepository.getRows(filters)).map(UserDTO::new);
 	}
@@ -570,6 +561,7 @@ public class UserService {
 	/**
 	 * @return a list of all the authorities
 	 */
+	@Transactional(readOnly = true)
 	public List<String> getAuthorities() {
 		return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
 	}
@@ -621,6 +613,7 @@ public class UserService {
 	 * @param loginUser
 	 * @return
 	 */
+	@Transactional(readOnly = true)
 	public Organization getMyOrgId() {
 		final String userLogin = SecurityUtils.getCurrentUserLogin()
 				.orElseThrow(() -> new InternalServerErrorException("Current user login not found"));
@@ -649,7 +642,7 @@ public class UserService {
 	 * @param loginUser
 	 * @return
 	 */
-	public List<Organization> getMyOrgIds() {
+	private List<Organization> getMyOrgIds() {
 		final String userLogin = SecurityUtils.getCurrentUserLogin()
 				.orElseThrow(() -> new InternalServerErrorException("Current user login not found"));
 		Optional<User> user = this.userRepository.findOneByLogin(userLogin);
@@ -658,26 +651,18 @@ public class UserService {
 			if (user.get().getSelOrgRoleId() != null) {
 				UserRoleOrganization tempOr = userRoleOrganizationRepository.findById(user.get().getSelOrgRoleId()).orElse(null);
 				if (tempOr != null) {
-					if (tempOr.getOrganization() != null) {
-						orgList.add(tempOr.getOrganization());
-					}
+					orgList = this.organizationRepository.findByOrgIdentityLike(tempOr.getOrganization().getOrgIdentity());
 				} else if (user.get().getOrganization() != null) {
-					orgList.add(user.get().getOrganization());
+					orgList = this.organizationRepository.findByOrgIdentityLike(user.get().getOrganization().getOrgIdentity());
 				}
 			} else if (user.get().getOrganization() != null) {
-				orgList.add(user.get().getOrganization());
-			}
-			int i = 0;
-			while (i < orgList.size()) {
-				orgList.addAll(organizationRepository.findByUpper(orgList.get(i)));
-				i++;
+				orgList = this.organizationRepository.findByOrgIdentityLike(user.get().getOrganization().getOrgIdentity());
 			}
 		}
-		// return
-		// orgList.stream().map(Organization::getId).collect(Collectors.toList());
 		return orgList;
 	}
 
+	@Transactional(readOnly = true)
 	public Page<UserDTO> findFirstNameByLoginIn(String[] logins) {
 		List<String> ls = new ArrayList<>();
 		for (int i = 0; i < logins.length; i++) {
@@ -685,7 +670,35 @@ public class UserService {
 		}
 		return new PageImpl<User>(userRepository.findByLoginIn(ls)).map(UserDTO::new);
 	}
+	
+	@Transactional(readOnly = true)
+	public boolean isOk(String login) {
+	    Optional<User> existingUser = userRepository.findOneByLogin(login);
+	    Organization o = existingUser.get().getOrganization();
+        if (!existingUser.isPresent()) {
+            // 不是权限范围之内的用户，不允许操作
+            return false;
+        } else {
+            for(Organization oo : this.getMyOrgIds()) {
+                if(o.getId().equals(oo.getId())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+	
+	@Transactional(readOnly = true)
+    public boolean isOk(Organization o) {
+        for(Organization oo : this.getMyOrgIds()) {
+            if(o.getId().equals(oo.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+	@Transactional(readOnly = true)
 	public Page<UserDTO> findUsers(List<Long> orgIds, List<Long> roleIds, Map<String, Object> filters) {
 
 		if ((orgIds == null) && (roleIds == null )) {

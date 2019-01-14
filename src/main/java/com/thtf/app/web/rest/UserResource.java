@@ -158,9 +158,7 @@ public class UserResource {
 		if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
 			throw new LoginAlreadyUsedException();
 		}
-		existingUser = userRepository.findUserByLoginAndOrganizationIn(userDTO.getLogin().toLowerCase(),
-				userService.getMyOrgIds());
-		if (!isOk(existingUser)) {
+		if (!this.userService.isOk(existingUser.get().getLogin())) {
 			// 不是权限范围之内的用户，不允许操作，前面两个已经判断了相关逻辑，此处之判断存在与否
 			throw new UltraViresException();
 		}
@@ -224,13 +222,7 @@ public class UserResource {
 	@Timed
 	public ResponseEntity<UserDTO> getUser(@PathVariable String login) {
 		log.debug("REST request to get User : {}", login);
-		// Optional<User> existingUser =
-		// userRepository.findUserByLoginAndOrganizationIn(login.toLowerCase(),userService.getMyOrgIds());
-		Optional<User> existingUser = userRepository.findOneByLogin(login);
-		// 查询两遍，牺牲了性能
-		// existingUser =
-		// userRepository.findUserByLoginAndOrganizationIn(login.toLowerCase(),userService.getMyOrgIds());
-		if (!isOk(existingUser)) {
+		if (!this.userService.isOk(login)) {
 			// 不是权限范围之内的用户，不允许操作
 			throw new UltraViresException();
 		}
@@ -266,10 +258,7 @@ public class UserResource {
 		log.debug("REST request to delete User: {}", login);
 		final String userLogin = SecurityUtils.getCurrentUserLogin()
 				.orElseThrow(() -> new InternalServerErrorException("Current user login not found"));
-		Optional<User> existingUser = userRepository.findOneByLogin(login);
-		// existingUser =
-		// userRepository.findUserByLoginAndOrganizationIn(login.toLowerCase(),userService.getMyOrgIds());
-		if (!isOk(existingUser)) {
+		if (!this.userService.isOk(login)) {
 			// 不是权限范围之内的用户，不允许操作
 			throw new UltraViresException();
 		}
@@ -279,36 +268,6 @@ public class UserResource {
 		return ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted", login)).build();
 	}
 
-	private boolean isOk(Optional<User> existingUser) {
-		if (!existingUser.isPresent()) {
-			// 不是权限范围之内的用户，不允许操作
-			return false;
-		} else {
-			if (!userService.getMyOrgIds().contains(existingUser.get().getOrganization())) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * DELETE /users/:id : delete the "id" User.
-	 *
-	 * @param id
-	 *            the id of the user to delete
-	 * @return the ResponseEntity with status 200 (OK)
-	 */
-	// @DeleteMapping("/users/{id}")
-	// @Timed
-	// @Secured(AuthoritiesConstants.ADMIN)
-	// public ResponseEntity<Void> deleteByid(@PathVariable String[] id) {
-	// log.debug("REST request to delete User: {}", Arrays.toString(id));
-	// userService.deleteById(id);
-	// return
-	// ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted",
-	// Arrays.toString(id)))
-	// .build();
-	// }
 
 	/**
 	 * GET /users : update this users's orgid and orgname by userids.
@@ -336,7 +295,6 @@ public class UserResource {
 	 */
 	@PutMapping("/users/resetpass/{login:" + Constants.LOGIN_REGEX + "}")
 	@Timed
-	// @Secured(AuthoritiesConstants.ADMIN)
 	public ResponseEntity<Void> resetPassword(@PathVariable String login) {
 		log.debug("REST request to reset User: {}", login);
 		userService.resetPassword(login);
