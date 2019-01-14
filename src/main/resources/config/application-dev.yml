@@ -35,12 +35,9 @@ spring:
         serialization.indent_output: true
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        # url: jdbc:mysql://192.168.1.11:3306/redapple1?useUnicode=true&characterEncoding=utf8&useSSL=false
-        # username: root
-        # password: IN#hf8tv
-        url: jdbc:mysql://localhost:3306/redapple?useUnicode=true&characterEncoding=utf8&useSSL=false
+        url: jdbc:mysql://192.168.1.11:3306/redapple1?useUnicode=true&characterEncoding=utf8&useSSL=false
         username: root
-        password: root
+        password: IN#hf8tv
         hikari:
             auto-commit: false
             data-source-properties:
