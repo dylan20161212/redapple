@@ -1,11 +1,13 @@
 package com.thtf.app.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.thtf.app.domain.Authority;
 import com.thtf.app.domain.User;
 import com.thtf.app.domain.UserRoleOrganization;
 
@@ -31,4 +33,7 @@ public interface UserRoleOrganizationRepository  extends BaseRepository<UserRole
 	UserRoleOrganization findByRoleId(Long selOrgRoleId);
 	
 	void deleteByUserIdAndOrganizationId(long userId, long organizationId);
+
+	Optional<List<UserRoleOrganization>> findByOrganizationIdAndUserLogin(Long selorgid, String login);
+
 }

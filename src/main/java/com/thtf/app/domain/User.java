@@ -132,9 +132,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
 	@JoinColumn(name = "organization_id")
 	private Organization organization;
 
-	@ApiModelProperty(value = "选择的组织机构角色标识")
-	@Column(name = "sel_org_role_id")
-	private Long selOrgRoleId;
+//	@ApiModelProperty(value = "选择的组织机构角色标识")
+	@ApiModelProperty(value = "组织机构标识")
+	@Column(name = "sel_org_id")
+	private Long selOrgId;
 
 	public Long getId() {
 		return id;
@@ -219,12 +220,13 @@ public class User extends AbstractAuditingEntity implements Serializable {
 		this.roles = roles;
 	}
 
-	public Long getSelOrgRoleId() {
-		return selOrgRoleId;
+	
+	public Long getSelOrgId() {
+		return selOrgId;
 	}
 
-	public void setSelOrgRoleId(Long selOrgRoleId) {
-		this.selOrgRoleId = selOrgRoleId;
+	public void setSelOrgId(Long selOrgId) {
+		this.selOrgId = selOrgId;
 	}
 
 	@Override

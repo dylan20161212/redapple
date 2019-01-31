@@ -316,7 +316,7 @@ public class UserResource {
 		User updatedUser = userService.exchangeOrgRole(selorgroleid);
 		if (null != updatedUser) {
 			return ResponseEntity.ok()
-					.headers(HeaderUtil.createAlert("userOrgRole.exchanged", updatedUser.getSelOrgRoleId().toString()))
+					.headers(HeaderUtil.createAlert("userOrgRole.exchanged", updatedUser.getSelOrgId().toString()))
 					.build();
 		}
 		return ResponseEntity.ok().headers(HeaderUtil.createAlert("userOrgRole.exchangeFail", "-1")).build();

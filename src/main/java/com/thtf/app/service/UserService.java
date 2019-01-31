@@ -3,9 +3,12 @@ package com.thtf.app.service;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -445,100 +448,104 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public UserDTO getUserDTOWithAuthorities() {
 		UserDTO tempUdto = new UserDTO();
-		User tempUser = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin).orElse(null);
-		// 获取当前用户组织机构角色selOrgRoleId->通过角色获取权限
-		if (null != tempUser) {
-			Set<Resource> tempResources = new HashSet<>();
-			if (tempUser.getSelOrgRoleId() != null) {
-				UserRoleOrganization userRoleOrganization = userRoleOrganizationRepository
-						.findById(tempUser.getSelOrgRoleId()).orElse(null);
-				if (null != userRoleOrganization) {
-					tempResources.addAll(userRoleOrganization.getRole().getResources());
-				} else {
-					List<UserRoleOrganization> listUserRoleOrganization = userRoleOrganizationRepository
-							.findByUserIdOrderByIdAsc(tempUser.getId());
-					if (!listUserRoleOrganization.isEmpty()) {
-						tempResources.addAll(listUserRoleOrganization.get(0).getRole().getResources());
-					}
-				}
-			} else {
-				List<UserRoleOrganization> listUserRoleOrganization = userRoleOrganizationRepository
-						.findByUserIdOrderByIdAsc(tempUser.getId());
-				if (!listUserRoleOrganization.isEmpty()) {
-					tempResources.addAll(listUserRoleOrganization.get(0).getRole().getResources());
-				}
-			}
-			// 设置权限
-			Set<String> authorities = new HashSet<>();
-			for (Resource res : tempResources) {
-				String auth = new String();
-
-				if (null != res.getResOperate() && !"".equals(res.getResOperate())) {
-					auth = res.getResRouterLink() + ":" + res.getResOperate();
-				} else {
-					auth = res.getResRouterLink();
-				}
-				authorities.add(auth);
-			}
-
+		Optional<User> userOption = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin);
+		
+	
+		if(userOption.isPresent()){
+			User tempUser = userOption.get();
+			//获取当前用户所选择组织机构下的 资源
+			Set<String> authorities = getAuthorities(tempUser);
+			
+			
 			tempUdto = new UserDTO(tempUser.getId(), tempUser.getLogin(), tempUser.getRealName(), tempUser.getEmail(), tempUser.getActivated(), tempUser.getImageUrl(),
 					tempUser.getLangKey(), tempUser.getCreatedBy(), tempUser.getCreatedDate(),
 					tempUser.getLastModifiedBy(), tempUser.getLastModifiedDate(), authorities, null,
-					// u.getRoles().stream()
-					// .map((r) -> new RoleDTO(r.getId(), r.getRoleName(),
-					// r.getRoleDescription(), r.getRoleFlag(),
-					// r.getRoleEffDate(), r.getRoleExpDate(), null,
-					// r.getCreatedBy(), r.getCreatedDate(),
-					// r.getLastModifiedBy(), r.getLastModifiedDate()))
-					// .collect(Collectors.toSet()),
+					
 					tempUser.getOrganization() == null ? null : tempUser.getOrganization().getId(),
 							tempUser.getOrganization() == null ? null : tempUser.getOrganization().getOrgName()
 					);
+			
+			
 		}
 		return tempUdto;
 	}
+
+	
 
 	@Transactional(readOnly = true)
 	public Optional<User> getUserWithAuthoritiesO() {
 		User tempUser = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin).orElse(null);
 		// 获取当前用户组织机构角色selOrgRoleId->通过角色获取权限
 		if (null != tempUser) {
-			Set<Resource> tempResources = new HashSet<>();
-			if (tempUser.getSelOrgRoleId() != null) {
-				UserRoleOrganization userRoleOrganization = userRoleOrganizationRepository
-						.findById(tempUser.getSelOrgRoleId()).orElse(null);
-				if (null != userRoleOrganization) {
-					tempResources.addAll(userRoleOrganization.getRole().getResources());
-				} else {
-					List<UserRoleOrganization> listUserRoleOrganization = userRoleOrganizationRepository
-							.findByUserIdOrderByIdAsc(tempUser.getId());
-					if (!listUserRoleOrganization.isEmpty()) {
-						tempResources.addAll(listUserRoleOrganization.get(0).getRole().getResources());
-					}
-				}
-			} else {
-				List<UserRoleOrganization> listUserRoleOrganization = userRoleOrganizationRepository
-						.findByUserIdOrderByIdAsc(tempUser.getId());
-				if (!listUserRoleOrganization.isEmpty()) {
-					tempResources.addAll(listUserRoleOrganization.get(0).getRole().getResources());
-				}
-			}
-			// 设置权限
-			Set<Authority> authorities = new HashSet<>();
-			for (Resource res : tempResources) {
+			Set<Authority> auths = this.getAuthorities(tempUser).stream().map((authstr)->{
 				Authority auth = new Authority();
+				auth.setName(authstr);
+				return auth;
+			}).collect(Collectors.toSet());
 
-				if (null != res.getResOperate() && !"".equals(res.getResOperate())) {
-					auth.setName(res.getResRouterLink() + ":" + res.getResOperate());
-				} else {
-					auth.setName(res.getResRouterLink());
-				}
-				authorities.add(auth);
-			}
-
-			tempUser.setAuthorities(authorities);
+			tempUser.setAuthorities(auths);
 		}
 		return Optional.of(tempUser);
+	}
+	
+	
+	
+	/**
+	 * @param resourcesMap
+	 * @param tempUser
+	 * @return
+	 */
+	public Set<String> getAuthorities(User tempUser) {
+
+		Set<String> authorities = new HashSet<>();
+		List<UserRoleOrganization> listUROrgs = userRoleOrganizationRepository.findByUserIdOrderByIdAsc(tempUser.getId());
+		List<UserRoleOrganization> selected = null;
+		if(listUROrgs == null || listUROrgs.size()==0){
+			return authorities;
+		}else{
+			selected = listUROrgs.stream().filter((UserRoleOrganization uro)->{
+				return uro.getOrganization().getId()==tempUser.getSelOrgId();
+			}).collect(Collectors.toList());
+		}
+		// 如果没有选择组织机构或者选择的组织机构id 不存在，那么 找到一个有权限的三元组中的一个组织机构作为选择的组织机构
+		if(selected == null || selected.size() ==0 ){
+			Long selectedOrgId = null;
+			for (UserRoleOrganization userRoleOrganization : listUROrgs) {
+				if(userRoleOrganization.getOrganization() != null && userRoleOrganization.getRole() != null && userRoleOrganization.getRole().getResources() != null){
+					selectedOrgId  = userRoleOrganization.getOrganization().getId();
+					break;
+				}
+			}
+			final Long selectedOrgId1 = selectedOrgId;
+			if(selectedOrgId != null ){
+				selected = listUROrgs.stream().filter((UserRoleOrganization uro)->{
+					return uro.getOrganization().getId() == selectedOrgId1;
+				}).collect(Collectors.toList());
+			}
+		}
+		if(selected == null || selected.size() ==0 ){
+			return authorities;
+		}
+
+		for (UserRoleOrganization userRoleOrganization : selected) {
+			Role role = userRoleOrganization.getRole();
+			if( role != null && role.getResources() != null && role.getResources().size()>0){
+				Iterator<Resource> iterator = role.getResources().iterator();
+				while(iterator.hasNext()){
+					Resource resource = iterator.next();
+					String auth = "";
+					if (null != resource.getResOperate() && !"".equals(resource.getResOperate())) {
+						auth = resource.getResRouterLink() + ":" + resource.getResOperate();
+					} else {
+						auth = resource.getResRouterLink();
+					}
+					authorities.add(auth);
+
+				}
+			}
+		}
+		
+		return authorities;
 	}
 
 	/**
@@ -588,23 +595,22 @@ public class UserService {
 	 * @return 切换组织结构与角色
 	 */
 	@Transactional
-	public User exchangeOrgRole(Long selorgroleid) {
-		User tempUser = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin).orElse(null);
-		if (null != tempUser) {
-			UserRoleOrganization tempUserRoleOrganization = userRoleOrganizationRepository.findById(selorgroleid).orElse(null);
-			if (null != tempUserRoleOrganization) {
-				// 成功
-				if (tempUserRoleOrganization.getUser().equals(tempUser)) {
-					tempUser.setSelOrgRoleId(selorgroleid);
-					userRepository.save(tempUser);
-				} else {
-					tempUser = null;
-				}
-			} else {
-				tempUser = null;
+	public User exchangeOrgRole(Long selorgid) {
+		Optional<User> tempUserOption = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin);
+		if (tempUserOption.isPresent()) {
+			Optional<List<UserRoleOrganization>> userRoleOrgOptiol = userRoleOrganizationRepository.findByOrganizationIdAndUserLogin(selorgid,tempUserOption.get().getLogin());
+			if(userRoleOrgOptiol.isPresent() && !userRoleOrgOptiol.get().isEmpty()){
+				User user =  tempUserOption.get();
+				user.setSelOrgId(selorgid);
+				userRepository.save(user);
+			}else{
+				return tempUserOption.get();
 			}
+
+		}else{
+			return null;
 		}
-		return tempUser;
+		return null;
 	}
 
 	/**
@@ -618,22 +624,24 @@ public class UserService {
 		final String userLogin = SecurityUtils.getCurrentUserLogin()
 				.orElseThrow(() -> new InternalServerErrorException("Current user login not found"));
 		Optional<User> user = this.userRepository.findOneByLogin(userLogin);
-		Organization orgId = null;
-		if (user.isPresent()) {
-			if (user.get().getSelOrgRoleId() != null) {
-				UserRoleOrganization tempOr = userRoleOrganizationRepository.findById(user.get().getSelOrgRoleId()).orElse(null);
-				if (tempOr != null) {
-					if (tempOr.getOrganization() != null) {
-						orgId = tempOr.getOrganization();
-					}
-				} else if (user.get().getOrganization() != null) {
-					orgId = user.get().getOrganization();
-				}
-			} else if (user.get().getOrganization() != null) {
-				orgId = user.get().getOrganization();
-			}
-		}
-		return orgId;
+//		Organization orgId = null;
+//		if (user.isPresent()) {
+//			if (user.get().getSelOrgId() != null) {
+//				UserRoleOrganization tempOr = organizationRepository.findById(user.get().getSelOrgRoleId()).orElse(null);
+//				if (tempOr != null) {
+//					if (tempOr.getOrganization() != null) {
+//						orgId = tempOr.getOrganization();
+//					}
+//				} else if (user.get().getOrganization() != null) {
+//					orgId = user.get().getOrganization();
+//				}
+//			} else if (user.get().getOrganization() != null) {
+//				orgId = user.get().getOrganization();
+//			}
+//		}
+//		return orgId;
+		
+		return this.organizationRepository.findById(user.get().getSelOrgId()).orElse(null);
 	}
 
 	/**
@@ -642,16 +650,16 @@ public class UserService {
 	 * @param loginUser
 	 * @return
 	 */
-	private List<Organization> getMyOrgIds() {
+	public List<Organization> getMyOrgIds() {
 		final String userLogin = SecurityUtils.getCurrentUserLogin()
 				.orElseThrow(() -> new InternalServerErrorException("Current user login not found"));
 		Optional<User> user = this.userRepository.findOneByLogin(userLogin);
 		List<Organization> orgList = new ArrayList<>();
 		if (user.isPresent()) {
-			if (user.get().getSelOrgRoleId() != null) {
-				UserRoleOrganization tempOr = userRoleOrganizationRepository.findById(user.get().getSelOrgRoleId()).orElse(null);
+			if (user.get().getSelOrgId() != null) {
+				Organization tempOr = this.organizationRepository.findById(user.get().getSelOrgId()).orElse(null);
 				if (tempOr != null) {
-					orgList = this.organizationRepository.findByOrgIdentityLike(tempOr.getOrganization().getOrgIdentity());
+					orgList = this.organizationRepository.findByOrgIdentityLike(tempOr.getOrgIdentity());
 				} else if (user.get().getOrganization() != null) {
 					orgList = this.organizationRepository.findByOrgIdentityLike(user.get().getOrganization().getOrgIdentity());
 				}

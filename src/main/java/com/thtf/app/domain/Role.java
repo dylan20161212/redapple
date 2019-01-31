@@ -43,7 +43,6 @@ public class Role extends AbstractAuditingEntity implements Serializable {
 	@Column(name = "role_description")
 	private String roleDescription;
 
-	@Size(max = 1)
 	@Column(name = "role_flag")
 	private Integer roleFlag;
 

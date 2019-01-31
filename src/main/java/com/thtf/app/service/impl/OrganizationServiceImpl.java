@@ -23,6 +23,7 @@ import com.thtf.app.repository.UserRepository;
 import com.thtf.app.repository.UserRoleOrganizationRepository;
 import com.thtf.app.security.SecurityUtils;
 import com.thtf.app.service.OrganizationService;
+import com.thtf.app.service.UserService;
 import com.thtf.app.service.dto.OrganizationDTO;
 import com.thtf.app.service.mapper.OrganizationMapper;
 import com.thtf.app.web.rest.errors.InternalServerErrorException;
@@ -43,16 +44,19 @@ public class OrganizationServiceImpl implements OrganizationService {
 	private final OrganizationMapper organizationMapper;
 
 	private final UserRoleOrganizationRepository userRoleOrganizationRepository;
-
+	
+	private final UserService userServcie;
+	
 	private static final String UPPERID = "upperId";
 
 	public OrganizationServiceImpl(OrganizationRepository organizationRepository, OrganizationMapper organizationMapper,
 			UserRepository userRepository,
-			UserRoleOrganizationRepository userRoleOrganizationRepository) {
+			UserRoleOrganizationRepository userRoleOrganizationRepository,UserService userService) {
 		this.organizationRepository = organizationRepository;
 		this.organizationMapper = organizationMapper;
 		this.userRepository = userRepository;
 		this.userRoleOrganizationRepository = userRoleOrganizationRepository;
+		this.userServcie = userService;
 	}
 
 	/**
@@ -97,29 +101,31 @@ public class OrganizationServiceImpl implements OrganizationService {
 	@Transactional(readOnly = true)
 	public List<OrganizationDTO> findOwn() {
 		log.debug("Request to get own Organizations");
-		final String userLogin = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new InternalServerErrorException("Current user login not found"));
-		Optional<User> user = this.userRepository.findOneByLogin(userLogin);
-		List<Organization> orgList = new ArrayList<>();
-		if (user.isPresent()) {
-			if (user.get().getSelOrgRoleId() != null) {
-				UserRoleOrganization tempOr = userRoleOrganizationRepository.findById(user.get().getSelOrgRoleId()).orElse(null);
-				if (tempOr != null) {
-					if (tempOr.getOrganization() != null) {
-						orgList.add(tempOr.getOrganization());
-					}
-				} else if (user.get().getOrganization() != null) {
-					orgList.add(user.get().getOrganization());
-				}
-			} else if (user.get().getOrganization() != null) {
-				orgList.add(user.get().getOrganization());
-			}
-			int i = 0;
-			while (i < orgList.size()) {
-				orgList.addAll(organizationRepository.findByUpper(orgList.get(i)));
-				i++;
-			}
-		}
+//		final String userLogin = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new InternalServerErrorException("Current user login not found"));
+//		Optional<User> user = this.userRepository.findOneByLogin(userLogin);
+		
+//		if (user.isPresent()) {
+			
+//			if (user.get().getSelOrgRoleId() != null) {
+//				UserRoleOrganization tempOr = userRoleOrganizationRepository.findById(user.get().getSelOrgRoleId()).orElse(null);
+//				if (tempOr != null) {
+//					if (tempOr.getOrganization() != null) {
+//						orgList.add(tempOr.getOrganization());
+//					}
+//				} else if (user.get().getOrganization() != null) {
+//					orgList.add(user.get().getOrganization());
+//				}
+//			} else if (user.get().getOrganization() != null) {
+//				orgList.add(user.get().getOrganization());
+//			}
+//			int i = 0;
+//			while (i < orgList.size()) {
+//				orgList.addAll(organizationRepository.findByUpper(orgList.get(i)));
+//				i++;
+//			}
+//		}
 //		return orgList.stream().map(Organization::getId).collect(Collectors.toList());
+		List<Organization> orgList = this.userServcie.getMyOrgIds();
 		return orgList.stream().filter(Objects::nonNull).map(organizationMapper::toDto)
 				.collect(Collectors.toCollection(LinkedList::new));
 	}

@@ -1,6 +1,5 @@
 package com.thtf.app.web.rest;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +7,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,9 +33,9 @@ import com.thtf.app.repository.OrganizationRepository;
 import com.thtf.app.repository.UserRepository;
 import com.thtf.app.repository.UserRoleOrganizationRepository;
 import com.thtf.app.security.SecurityUtils;
+import com.thtf.app.service.UserService;
 import com.thtf.app.service.dto.UserRoleOrganizationDTO;
 import com.thtf.app.service.mapper.UserRoleOrganizationMapper;
-import com.thtf.app.web.rest.errors.InternalServerErrorException;
 import com.thtf.app.web.rest.errors.UltraViresException;
 import com.thtf.app.web.rest.util.HeaderUtil;
 import com.thtf.app.web.rest.util.PaginationUtil;
@@ -64,14 +61,17 @@ public class UserRoleOrganizationResource {
 	private final UserRepository userRepository;
 	
 	private final OrganizationRepository organizationRepository;
+	
+	private final UserService userService;
 
 	public UserRoleOrganizationResource(UserRoleOrganizationRepository userRoleOrganizationRepository,
 			UserRoleOrganizationMapper userRoleOrganizationMapper, UserRepository userRepository,
-			OrganizationRepository organizationRepository) {
+			OrganizationRepository organizationRepository,UserService userService) {
 		this.userRoleOrganizationRepository = userRoleOrganizationRepository;
 		this.userRoleOrganizationMapper = userRoleOrganizationMapper;
 		this.userRepository = userRepository;
 		this.organizationRepository = organizationRepository;
+		this.userService = userService;
 	}
 
 	/**
@@ -154,11 +154,11 @@ public class UserRoleOrganizationResource {
 					uRoleOrg.setOrganization(tempOrg);
 				}
 			}
-			if (tempUser.getSelOrgRoleId() != null) {
-				headers.add("seluserorgrole", tempUser.getSelOrgRoleId().toString());
+			if (tempUser.getSelOrgId() != null) {
+				headers.add("seluserorg", tempUser.getSelOrgId().toString());
 			} else {
 				if (listUserRoleOrganization.size() > 0) {
-					headers.add("seluserorgrole", listUserRoleOrganization.get(0).getId().toString());
+					headers.add("seluserorg", listUserRoleOrganization.get(0).getId().toString());
 				}
 			}
 		}
@@ -323,31 +323,31 @@ public class UserRoleOrganizationResource {
 	 * @return
 	 */
 	private List<Organization> getMyOrgIds() {
-		final String userLogin = SecurityUtils.getCurrentUserLogin()
-				.orElseThrow(() -> new InternalServerErrorException("Current user login not found"));
-		Optional<User> user = this.userRepository.findOneByLogin(userLogin);
-		List<Organization> orgList = new ArrayList<>();
-		if (user.isPresent()) {
-			if (user.get().getSelOrgRoleId() != null) {
-				UserRoleOrganization tempOr = userRoleOrganizationRepository.findById(user.get().getSelOrgRoleId()).orElse(null);
-				if (tempOr != null) {
-					if (tempOr.getOrganization() != null) {
-						orgList.add(tempOr.getOrganization());
-					}
-				} else if (user.get().getOrganization() != null) {
-					orgList.add(user.get().getOrganization());
-				}
-			} else if (user.get().getOrganization() != null) {
-				orgList.add(user.get().getOrganization());
-			}
-			int i = 0;
-			while (i < orgList.size()) {
-				orgList.addAll(organizationRepository.findByUpper(orgList.get(i)));
-				i++;
-			}
-		}
-		// return
-		// orgList.stream().map(Organization::getId).collect(Collectors.toList());
-		return orgList;
+//		final String userLogin = SecurityUtils.getCurrentUserLogin()
+//				.orElseThrow(() -> new InternalServerErrorException("Current user login not found"));
+//		Optional<User> user = this.userRepository.findOneByLogin(userLogin);
+//		List<Organization> orgList = new ArrayList<>();
+//		if (user.isPresent()) {
+//			if (user.get().getSelOrgRoleId() != null) {
+//				UserRoleOrganization tempOr = userRoleOrganizationRepository.findById(user.get().getSelOrgRoleId()).orElse(null);
+//				if (tempOr != null) {
+//					if (tempOr.getOrganization() != null) {
+//						orgList.add(tempOr.getOrganization());
+//					}
+//				} else if (user.get().getOrganization() != null) {
+//					orgList.add(user.get().getOrganization());
+//				}
+//			} else if (user.get().getOrganization() != null) {
+//				orgList.add(user.get().getOrganization());
+//			}
+//			int i = 0;
+//			while (i < orgList.size()) {
+//				orgList.addAll(organizationRepository.findByUpper(orgList.get(i)));
+//				i++;
+//			}
+//		}
+	
+//		return orgList;
+		return this.userService.getMyOrgIds();
 	}
 }

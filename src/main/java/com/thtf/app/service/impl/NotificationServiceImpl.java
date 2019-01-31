@@ -404,18 +404,19 @@ public class NotificationServiceImpl implements NotificationService {
 		Optional<User> user = this.userRepository.findOneByLogin(loginUser);
 		String orgId = "-1";
 		if (user.isPresent()) {
-			if (user.get().getSelOrgRoleId() != null) {
-				UserRoleOrganization tempOr = userRoleOrganizationRepository.findById(user.get().getSelOrgRoleId()).orElse(null);
-				if (tempOr != null) {
-					if (tempOr.getOrganization() != null) {
-						orgId = "%\"" + tempOr.getOrganization().getId().toString() + "\"%";
-					}
-				} else if (user.get().getOrganization() != null) {
-					orgId = "%\"" + user.get().getOrganization().getId().toString() + "\"%";
-				}
-			} else if (user.get().getOrganization() != null) {
-				orgId = "%\"" + user.get().getOrganization().getId().toString() + "\"%";
-			}
+//			if (user.get().getSelOrgRoleId() != null) {
+//				UserRoleOrganization tempOr = userRoleOrganizationRepository.findById(user.get().getSelOrgRoleId()).orElse(null);
+//				if (tempOr != null) {
+//					if (tempOr.getOrganization() != null) {
+//						orgId = "%\"" + tempOr.getOrganization().getId().toString() + "\"%";
+//					}
+//				} else if (user.get().getOrganization() != null) {
+//					orgId = "%\"" + user.get().getOrganization().getId().toString() + "\"%";
+//				}
+//			} else if (user.get().getOrganization() != null) {
+//				orgId = "%\"" + user.get().getOrganization().getId().toString() + "\"%";
+//			}
+			orgId = user.get().getSelOrgId()+"";
 		}
 		return orgId;
 	}

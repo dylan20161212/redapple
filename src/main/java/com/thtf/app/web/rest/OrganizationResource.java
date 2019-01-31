@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 import com.thtf.app.service.OrganizationService;
+import com.thtf.app.service.UserService;
 import com.thtf.app.service.dto.OrganizationDTO;
 import com.thtf.app.web.rest.util.HeaderUtil;
 
@@ -40,9 +41,12 @@ public class OrganizationResource {
     private static final String ENTITY_NAME = "organization";
 
     private final OrganizationService organizationService;
+    
+ 
 
     public OrganizationResource(OrganizationService organizationService) {
         this.organizationService = organizationService;
+        
     }
 
     /**

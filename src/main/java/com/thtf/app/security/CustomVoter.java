@@ -84,8 +84,12 @@ public class CustomVoter implements AccessDecisionVoter<Object> {
 							re = (CustomGrantedAuthority) authority;
 							Resource theRes = re.getRes();
 							
-							if (null != authority.getAuthority() && (theUrl.equals(theRes.getResRouterLink()) || theRes.getResRouterLink().equals(matchAll))
-									&& (req.getMethod().equals(theRes.getResOperate()) || theRes.getResOperate().equals(matchAll))) {
+//							if (null != authority.getAuthority() && (theUrl.equals(theRes.getResRouterLink()) || theRes.getResRouterLink().equals(matchAll))
+//									&& (req.getMethod().equals(theRes.getResOperate()) || theRes.getResOperate().equals(matchAll))) {
+//								return ACCESS_GRANTED;
+//							}
+							
+							if (Pattern.matches(theRes.getResRouterLink(), theUrl) && Pattern.matches(theRes.getResOperate(), theRes.getResOperate())) {
 								return ACCESS_GRANTED;
 							}
 						} catch (Exception e) {

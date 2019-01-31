@@ -14,13 +14,13 @@ import com.thtf.app.domain.Role;
  */
 @Repository
 public interface RoleRepository extends BaseRepository<Role> {
-    @Query("select distinct t_role from Role t_role left join fetch t_role.resources")
+    @Query("select distinct sys_role from Role sys_role left join fetch sys_role.resources")
     List<Role> findAllWithEagerRelationships();
 
-    @Query("select t_role from Role t_role left join fetch t_role.resources where t_role.id =:id")
+    @Query("select sys_role from Role sys_role left join fetch sys_role.resources where sys_role.id =:id")
     Role findOneWithEagerRelationships(@Param("id") Long id);
     
-    @Query(value = "select * from t_role where id =:id and created_by =:created_by", nativeQuery = true)
+    @Query(value = "select * from sys_role where id =:id and created_by =:created_by", nativeQuery = true)
     List<Role> findOneByIdAndCreatedby(@Param("id") Long id, @Param("created_by") String createdBy);
     
     Set<Role> findByRoleName(String roleName);
