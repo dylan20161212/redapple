@@ -16,9 +16,6 @@ import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.thtf.app.config.ApplicationProperties;
 import com.thtf.app.config.DefaultProfileUtil;
 import com.thtf.app.repository.ExtendedJpaRepository;

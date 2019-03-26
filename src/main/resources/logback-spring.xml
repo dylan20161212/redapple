@@ -2,6 +2,7 @@
 <!DOCTYPE configuration>
 
 <configuration scan="true">
+    <springProperty name="LOG_FILE" scope="context" defaultValue="d:/tmp/redapple/ra.log" source="logging.LOG_FILE"/>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
 <!-- The FILE and ASYNC appenders are here as examples for a production configuration -->
